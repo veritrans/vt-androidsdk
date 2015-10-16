@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import id.co.veritrans.sdk.UserDetailsActivity;
+import id.co.veritrans.sdk.activities.UserDetailsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
