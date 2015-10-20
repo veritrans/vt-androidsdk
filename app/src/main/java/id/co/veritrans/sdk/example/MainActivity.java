@@ -1,14 +1,18 @@
 package id.co.veritrans.sdk.example;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import id.co.veritrans.sdk.activities.UserDetailsActivity;
+import id.co.veritrans.sdk.core.VeritransBuilder;
+import id.co.veritrans.sdk.core.VeritransSDK;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +25,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(MainActivity.this, UserDetailsActivity.class));
+                VeritransBuilder veritransBuilder = new
+                        VeritransBuilder(MainActivity.this, "dbdy", 100, true);
+                veritransBuilder.enableLog(true);
+                    veritransBuilder.buildSDK();
+
+
+
+                VeritransBuilder veritransBuilder2 = new
+                        VeritransBuilder(MainActivity.this, "dbdy", 100, true);
+
+
+                VeritransSDK veritransSDK2 = veritransBuilder2.buildSDK();
+
+                if(veritransSDK2 == null){
+                    Log.d(TAG , "failed to create sdk instance.");
+                }else{
+                    Log.d(TAG , "successfully created sdk instance.");
+                }
 
             }
         });
-
 
     }
 
