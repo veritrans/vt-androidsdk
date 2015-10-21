@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
                 VeritransBuilder veritransBuilder2 = new
                         VeritransBuilder(MainActivity.this, "dbdy", 100, true);
 
-
                 VeritransSDK veritransSDK2 = veritransBuilder2.buildSDK();
 
                 if(veritransSDK2 == null){
