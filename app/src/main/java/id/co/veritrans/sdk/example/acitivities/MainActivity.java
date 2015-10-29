@@ -1,4 +1,4 @@
-package id.co.veritrans.sdk.example;
+package id.co.veritrans.sdk.example.acitivities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.core.VeritransSDK;
+import id.co.veritrans.sdk.example.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 VeritransBuilder veritransBuilder = new
-                        VeritransBuilder(MainActivity.this, "dbdy", 100, true);
+                        VeritransBuilder(MainActivity.this, "dbdy", 100, );
                 veritransBuilder.enableLog(true);
                     veritransBuilder.buildSDK();
 
