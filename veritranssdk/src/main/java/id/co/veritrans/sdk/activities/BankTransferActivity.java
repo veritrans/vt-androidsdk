@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import id.co.veritrans.sdk.R;
 import id.co.veritrans.sdk.callbacks.PermataBankTransferStatus;
 import id.co.veritrans.sdk.core.Constants;
 import id.co.veritrans.sdk.core.Logger;
+import id.co.veritrans.sdk.core.SdkUtil;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.fragments.BankTransactionStatusFragment;
@@ -54,6 +54,7 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
     private ArrayList<BillingAddress> mBillingAddressArrayList = new ArrayList<>();
     private ArrayList<ShippingAddress> mShippingAddressArrayList = new ArrayList<>();
     private CustomerDetails mCustomerDetails = null;
+    private BankTransferFragment bankTransferFragment = null;
 
 
     @Override
@@ -75,8 +76,10 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
         // setup home fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        bankTransferFragment = new BankTransferFragment();
+
         fragmentTransaction.add(R.id.bank_transfer_container,
-                new BankTransferFragment(), HOME_FRAGMENT);
+                bankTransferFragment, HOME_FRAGMENT);
         fragmentTransaction.addToBackStack(HOME_FRAGMENT);
         fragmentTransaction.commit();
 
@@ -85,6 +88,8 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onBackPressed() {
+
+        //enable this code if wants to travers backward in fragment back stack
 
         /*FragmentManager fragmentManager = getSupportFragmentManager();
         int count = fragmentManager.getBackStackEntryCount();
@@ -139,70 +144,13 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
         if (v.getId() == R.id.btn_confirm_payment) {
 
             if (currentFragment.equalsIgnoreCase(HOME_FRAGMENT)) {
-
-
-                VeritransSDK veritransSDK = VeritransSDK.getVeritransSDK();
-
-                if (veritransSDK != null) {
-
-                    // bank name
-                    BankTransfer bankTransfer = new BankTransfer();
-                    bankTransfer.setBank("permata");
-
-                    //transaction details
-                    TransactionDetails transactionDetails = new TransactionDetails();
-                    transactionDetails.setGross_amount("" + mVeritransSDK.getAmount());
-                    transactionDetails.setOrder_id(mVeritransSDK.getOrderId());
-
-
-                    final PermataBankTransfer permataBankTransfer =
-                            new PermataBankTransfer(bankTransfer, transactionDetails, null,
-                                    mBillingAddressArrayList, mShippingAddressArrayList,
-                                    mCustomerDetails);
-
-
-                    veritransSDK.paymentUsingPermataBank(BankTransferActivity.this,
-                            permataBankTransfer, new PermataBankTransferStatus() {
-
-
-                                @Override
-                                public void onSuccess(PermataBankTransferResponse
-                                                              permataBankTransferResponse) {
-
-                                    Toast.makeText(getApplicationContext(), "in OnSuccess of bank" +
-                                                    " transfer",
-                                            Toast.LENGTH_SHORT).show();
-
-                                    if (permataBankTransferResponse != null) {
-                                        setUpTransactionFragment(permataBankTransferResponse);
-                                    } else {
-                                        onBackPressed();
-                                    }
-
-                                }
-
-
-                                @Override
-                                public void onFailure(String errorMessage) {
-                                    Toast.makeText(getApplicationContext(), "in OnFailure of bank" +
-                                                    " transfer",
-                                            Toast.LENGTH_SHORT).show();
-
-                                }
-                            });
-
-
-                } else {
-                    Toast.makeText(getApplicationContext(), Constants.ERROR_SDK_IS_NOT_INITIALIZED,
-                            Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-
+                  performTrsansaction();
             } else if (currentFragment.equalsIgnoreCase(PAYMENT_FRAGMENT)) {
                 setUpTransactionStatusFragment();
             } else {
                 onBackPressed();
             }
+
         }
     }
 
@@ -253,52 +201,139 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
 
                 ArrayList<UserAddress> userAddresses = userDetail.getUserAddresses();
                 if (userAddresses != null && !userAddresses.isEmpty()) {
-                    Logger.i("userAddresses:" + userAddresses.size());
+
+                    Logger.i("Found " + userAddresses.size()+" user addresses.");
 
                     mCustomerDetails = new CustomerDetails();
                     mCustomerDetails.setPhone(userDetail.getPhoneNumber());
                     mCustomerDetails.setFirst_name(userDetail.getUserFullName());
                     mCustomerDetails.setLast_name(" ");
-                    mCustomerDetails.setEmail(userDetail.getEmail());
+                    mCustomerDetails.setEmail("");
 
-                    for (int i = 0; i < userAddresses.size(); i++) {
+                    //add email which is entered in editText
+                    //mCustomerDetails.setEmail(userDetail.getEmail());
 
-                        UserAddress userAddress = userAddresses.get(i);
 
-                        if (userAddress.getAddressType() == Constants.ADDRESS_TYPE_BILLING) {
-                            BillingAddress billingAddress = new BillingAddress();
-                            billingAddress.setCity(userAddress.getCity());
-                            billingAddress.setFirst_name(userDetail.getUserFullName());
-                            billingAddress.setLast_name("");
-                            billingAddress.setPhone(userDetail.getPhoneNumber());
-                            billingAddress.setCountry_code(userAddress.getCountry());
-                            billingAddress.setPostal_code(userAddress.getZipcode());
-                            mBillingAddressArrayList.add(billingAddress);
-                        } else {
-
-                            ShippingAddress shippingAddress = new ShippingAddress();
-                            shippingAddress.setCity(userAddress.getCity());
-                            shippingAddress.setFirst_name(userDetail.getUserFullName());
-                            shippingAddress.setLast_name("");
-                            shippingAddress.setPhone(userDetail.getPhoneNumber());
-                            shippingAddress.setCountry_code(userAddress.getCountry());
-                            shippingAddress.setPostal_code(userAddress.getZipcode());
-                            mShippingAddressArrayList.add(shippingAddress);
-
-                        }
-
-                    }
-
+                    extractUserAddress(userDetail, userAddresses);
                 }
 
+            }else {
+                SdkUtil.showSnackbar(BankTransferActivity.this, "User details not available.");
+                finish();
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.e("Error while fetching user details : " + ex.getMessage());
+        } catch (IOException ex) {
+            Logger.e("Error while fetching user details : " + ex.getMessage());
         }
 
     }
+
+
+
+    private void extractUserAddress(UserDetail userDetail, ArrayList<UserAddress> userAddresses) {
+
+        for (int i = 0; i < userAddresses.size(); i++) {
+
+            UserAddress userAddress = userAddresses.get(i);
+
+            if (userAddress.getAddressType() == Constants.ADDRESS_TYPE_BILLING) {
+                BillingAddress billingAddress = new BillingAddress();
+                billingAddress.setCity(userAddress.getCity());
+                billingAddress.setFirst_name(userDetail.getUserFullName());
+                billingAddress.setLast_name("");
+                billingAddress.setPhone(userDetail.getPhoneNumber());
+                billingAddress.setCountry_code(userAddress.getCountry());
+                billingAddress.setPostal_code(userAddress.getZipcode());
+                mBillingAddressArrayList.add(billingAddress);
+            } else {
+
+                ShippingAddress shippingAddress = new ShippingAddress();
+                shippingAddress.setCity(userAddress.getCity());
+                shippingAddress.setFirst_name(userDetail.getUserFullName());
+                shippingAddress.setLast_name("");
+                shippingAddress.setPhone(userDetail.getPhoneNumber());
+                shippingAddress.setCountry_code(userAddress.getCountry());
+                shippingAddress.setPostal_code(userAddress.getZipcode());
+                mShippingAddressArrayList.add(shippingAddress);
+
+            }
+
+        }
+    }
+
+
+    private void performTrsansaction() {
+
+        final VeritransSDK veritransSDK = VeritransSDK.getVeritransSDK();
+
+        if (veritransSDK != null) {
+
+            // bank name
+            BankTransfer bankTransfer = new BankTransfer();
+            bankTransfer.setBank("permata");
+
+            //transaction details
+            TransactionDetails transactionDetails = new TransactionDetails();
+            transactionDetails.setGrossAmount("" + mVeritransSDK.getAmount());
+            transactionDetails.setOrderId(mVeritransSDK.getOrderId());
+
+
+            // for sending instruction on email only if email-Id is entered.
+            if( bankTransferFragment != null && !bankTransferFragment.isDetached()) {
+                String emailId  = bankTransferFragment.getEmailId();
+                if( !TextUtils.isEmpty(emailId) && SdkUtil.isEmailValid(emailId)) {
+                    mCustomerDetails.setEmail(emailId.trim());
+                }else if(!TextUtils.isEmpty(emailId) && emailId.trim().length() > 0){
+                    SdkUtil.showSnackbar(BankTransferActivity.this, Constants.ERROR_INVALID_EMAIL_ID);
+                    return;
+                }
+            }
+
+            SdkUtil.showProgressDialog(BankTransferActivity.this, false);
+
+
+            final PermataBankTransfer permataBankTransfer =
+                    new PermataBankTransfer(bankTransfer, transactionDetails, null,
+                            mBillingAddressArrayList, mShippingAddressArrayList,
+                            mCustomerDetails);
+
+            veritransSDK.paymentUsingPermataBank(BankTransferActivity.this,
+                    permataBankTransfer, new PermataBankTransferStatus() {
+
+
+                        @Override
+                        public void onSuccess(PermataBankTransferResponse
+                                                      permataBankTransferResponse) {
+
+                            SdkUtil.hideProgressDialog();
+
+                            if (permataBankTransferResponse != null) {
+                                setUpTransactionFragment(permataBankTransferResponse);
+                            } else {
+                                onBackPressed();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(String errorMessage) {
+
+                            try {
+
+                                SdkUtil.hideProgressDialog();
+                                SdkUtil.showSnackbar(BankTransferActivity.this, "" + errorMessage);
+
+                            } catch (NullPointerException ex) {
+                                Logger.e("transaction error is " + errorMessage);
+                            }
+                        }
+                    });
+
+
+        } else {
+            Logger.e(Constants.ERROR_SDK_IS_NOT_INITIALIZED);
+            finish();
+        }
+    }
 }
-
-
