@@ -8,11 +8,11 @@ import java.util.UUID;
 public class Utils {
 
     /**
-     * It will return random 16 digit alpha numeric string.
+     * It will return random 8 digit alpha numeric string.
      * @return
      */
     public static String generateOrderId(){
         String uuid = UUID.randomUUID().toString();
-        return uuid.replace("-","");
+        return uuid.replace("-","").substring(0,10);
     }
 }
