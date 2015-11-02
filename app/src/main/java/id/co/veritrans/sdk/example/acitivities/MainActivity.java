@@ -3,7 +3,11 @@ package id.co.veritrans.sdk.example.acitivities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.TextView;
 
 import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.example.R;
@@ -31,9 +35,6 @@ public class MainActivity extends AppCompatActivity {
                 veritransBuilder.enableLog(true);
                 veritransBuilder.buildSDK();
 
-
-
-
     /*
                 //trying to create one more instance for debugging purpose. It should give u an
                 // error message like 'transaction already in progress'.
@@ -52,6 +53,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+
+        TextView textView = (TextView) findViewById(R.id.txt_payment);
+
+        Animation animation = new TranslateAnimation(0,0, 100,100);
+        animation.setStartOffset(200);
+        animation.setFillAfter(true);
+        animation.setDuration(2000);
+        animation.setInterpolator(new LinearInterpolator());
+        //textView.setAnimation(animation);
+       // animation.set;
+
+
 
     }
 
