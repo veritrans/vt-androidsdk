@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import id.co.veritrans.sdk.R;
 import id.co.veritrans.sdk.core.Constants;
 import id.co.veritrans.sdk.core.Logger;
-import id.co.veritrans.sdk.core.SdkUtil;
 import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.models.TransactionResponse;
 import id.co.veritrans.sdk.widgets.TextViewFont;
@@ -105,12 +104,24 @@ public class PaymentTransactionStatusFragment extends Fragment {
                 if (isSuccessful) {
                     getActivity().finish();
                 } else {
-                    SdkUtil.showSnackbar(getActivity(), getString(R.string.coming_soon));
+                    //SdkUtil.showSnackbar(getActivity(), getString(R.string.coming_soon));
+                   // retryTransaction();
+                    getActivity().finish();
                 }
             }
         });
 
         return view;
     }
+
+    /*private void retryTransaction() {
+        VeritransSDK veritransSDK = VeritransSDK.getVeritransSDK();
+        switch (veritransSDK.getCurrentPaymentMethod()){
+            case Constants.PAYMENT_METHOD_CREDIT_OR_DEBIT :
+                ((CreditDebitCardFlowActivity)getActivity()).getToken();
+                break;
+        }
+
+    }*/
 
 }

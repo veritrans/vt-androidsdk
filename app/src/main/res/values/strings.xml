@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">VeritransSdkExample</string>
+    <string name="one_click">One click</string>
+    <string name="two_click">Two click</string>
+    <string name="card_payment_options">Card payment options</string>
+    <string name="security_option">3Ds or not</string>
+    <string name="secure">Secure</string>
+    <string name="unsecure">Unsecure</string>
+    <string name="normal">Normal</string>
 </resources>
