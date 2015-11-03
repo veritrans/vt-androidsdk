@@ -7,8 +7,9 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.RadioGroup;
 
+import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.utils.Constants;
@@ -17,6 +18,11 @@ import id.co.veritrans.sdk.example.utils.Utils;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+    private RadioGroup clickradioGroup;
+    private String clickType  = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_NONE;
+    private RadioGroup secureradioGroup;
+    private boolean isSecure = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
                         VeritransBuilder(MainActivity.this, Utils.generateOrderId(),
                         Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY, 100);
                 veritransBuilder.enableLog(true);
+                Logger.i("oneclick"+clickType+"");
+                veritransBuilder.setCardPaymentInfo(clickType,isSecure);
                 veritransBuilder.buildSDK();
 
     /*
@@ -54,10 +62,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
+        secureradioGroup = (RadioGroup) findViewById(R.id.click_rg);
+        clickradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.one_click_rd){
+                    clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_ONE_CLICK;
+                } else if(checkedId == R.id.two_click_rd){
+                    clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_TWO_CLICK;
+                } else {
+                    clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_NONE;
+                }
+            }
+        });
+        secureradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.seure_rd){
+                    isSecure = true;
+                } else if(checkedId == R.id.unseure_rd){
+                    isSecure = false;
+                }
+            }
+        });
 
 
 
-        TextView textView = (TextView) findViewById(R.id.txt_payment);
+        //TextView textView = (TextView) findViewById(R.id.txt_payment);
 
         Animation animation = new TranslateAnimation(0,0, 100,100);
         animation.setStartOffset(200);
