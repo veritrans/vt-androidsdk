@@ -3,17 +3,18 @@ package id.co.veritrans.sdk.example.acitivities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.RadioGroup;
+
+import java.util.ArrayList;
 
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
+import id.co.veritrans.sdk.models.BillInfoModel;
+import id.co.veritrans.sdk.models.ItemDetails;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,8 +40,21 @@ public class MainActivity extends AppCompatActivity {
                         VeritransBuilder(MainActivity.this, Utils.generateOrderId(),
                         Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY, 100);
                 veritransBuilder.enableLog(true);
-                Logger.i("oneclick"+clickType+"");
-                veritransBuilder.setCardPaymentInfo(clickType,isSecure);
+                Logger.i("oneclick" + clickType + "");
+                veritransBuilder.setCardPaymentInfo(clickType, isSecure);
+
+
+                //to  perform transaction using mandiri bill payment.
+                // item details
+                ItemDetails itemDetails = new ItemDetails("1", 25, 4, "pen");
+                ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
+                itemDetailsArrayList.add(itemDetails);
+                veritransBuilder.setItemDetails(itemDetailsArrayList);
+
+                // bill info
+                BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
+                veritransBuilder.setBillInfoModel(billInfoModel);
+
                 veritransBuilder.buildSDK();
 
     /*
@@ -86,19 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-        //TextView textView = (TextView) findViewById(R.id.txt_payment);
-
-        Animation animation = new TranslateAnimation(0,0, 100,100);
-        animation.setStartOffset(200);
-        animation.setFillAfter(true);
-        animation.setDuration(2000);
-        animation.setInterpolator(new LinearInterpolator());
-        //textView.setAnimation(animation);
-       // animation.set;
-
 
 
     }
