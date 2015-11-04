@@ -46,6 +46,7 @@
     <RadioGroup android:id="@+id/secure_rg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/sixteen_dp"
         >
         <RadioButton android:id="@+id/seure_rd"
                      android:layout_width="wrap_content"
@@ -58,9 +59,19 @@
                      android:checked="true"
                      android:text="@string/unsecure"/>
     </RadioGroup>
+    <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="match_parent"
+                                              android:layout_height="wrap_content"
+                                              android:text="@string/delete_saved_cards"
+                                              android:textSize="@dimen/primary_text_size"/>
+    <Button
+        android:id="@+id/btn_delete_cards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_cards"/>
     <Button
         android:id="@+id/btn_payment"
-        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/sixteen_dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Payment"/>
 
