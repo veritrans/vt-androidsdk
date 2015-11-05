@@ -11,7 +11,9 @@ import java.util.ArrayList;
 
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
+import id.co.veritrans.sdk.core.TransactionRequest;
 import id.co.veritrans.sdk.core.VeritransBuilder;
+import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
@@ -28,11 +30,17 @@ public class MainActivity extends AppCompatActivity {
     private boolean isSecure = false;
     private StorageDataHandler storageDataHandler;
 
+    private VeritransSDK mVeritransSDK = null;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         storageDataHandler = new StorageDataHandler();
+
+        initializeSdk();
+
         Button payment = (Button) findViewById(R.id.btn_payment);
         Button deleteBt = (Button) findViewById(R.id.btn_delete_cards);
         deleteBt.setOnClickListener(new View.OnClickListener() {
@@ -47,35 +55,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         payment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                VeritransBuilder veritransBuilder = new
-                        VeritransBuilder(MainActivity.this, Utils.generateOrderId(),
-                        Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY, 100);
-                veritransBuilder.enableLog(true);
+                // transaction request initialization process.
 
-                Logger.i("oneclick" + clickType + "");
-                veritransBuilder.setCardPaymentInfo(clickType, isSecure);
+                TransactionRequest transactionRequest =
+                        new TransactionRequest( Utils.generateOrderId(), MainActivity.this, 100,
+                                id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
 
+                if( transactionRequest != null  && mVeritransSDK != null) {
 
-                //to  perform transaction using mandiri bill payment.
-                // item details
-                ItemDetails itemDetails = new ItemDetails("1", 25, 4, "pen");
-                ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
-                itemDetailsArrayList.add(itemDetails);
-                veritransBuilder.setItemDetails(itemDetailsArrayList);
+                    transactionRequest = addTransactionInfo(transactionRequest);
 
-                // bill info
-                BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
-                veritransBuilder.setBillInfoModel(billInfoModel);
+                    //start transaction
+                    mVeritransSDK.setTransactionRequest(transactionRequest);
+                }
 
-                //Logger.i("clickType"+clickType);
-                veritransBuilder.setCardPaymentInfo(clickType, isSecure);
-                veritransBuilder.buildSDK();
-
-    /*
+        /*
                 //trying to create one more instance for debugging purpose. It should give u an
                 // error message like 'transaction already in progress'.
 
@@ -123,6 +122,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private TransactionRequest addTransactionInfo(TransactionRequest transactionRequest) {
+        transactionRequest.setCardPaymentInfo(clickType, isSecure);
+        //to  perform transaction using mandiri bill payment.
+        // item details
+        ItemDetails itemDetails = new ItemDetails("1", 25, 4, "pen");
+        ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
+        itemDetailsArrayList.add(itemDetails);
+        transactionRequest.setItemDetails(itemDetailsArrayList);
+
+        // bill info
+        BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
+        transactionRequest.setBillInfoModel(billInfoModel);
+
+        //Logger.i("clickType"+clickType);
+        transactionRequest.setCardPaymentInfo(clickType, isSecure);
+        return  transactionRequest;
+    }
+
+    private void initializeSdk() {
+        // sdk initialization process
+        VeritransBuilder veritransBuilder = new
+                VeritransBuilder(getApplicationContext(),
+                Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY);
+        veritransBuilder.enableLog(true);
+
+        mVeritransSDK = veritransBuilder.buildSDK();
     }
 
 }
