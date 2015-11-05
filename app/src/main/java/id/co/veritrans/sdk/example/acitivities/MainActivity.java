@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import id.co.veritrans.sdk.callbacks.TransactionCallback;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.TransactionRequest;
@@ -20,6 +22,7 @@ import id.co.veritrans.sdk.example.utils.Utils;
 import id.co.veritrans.sdk.models.BillInfoModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
 import id.co.veritrans.sdk.models.ItemDetails;
+import id.co.veritrans.sdk.models.TransactionResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private StorageDataHandler storageDataHandler;
 
     private VeritransSDK mVeritransSDK = null;
-
+    private TransactionRequest transactionRequest = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,32 +65,67 @@ public class MainActivity extends AppCompatActivity {
 
                 // transaction request initialization process.
 
-                TransactionRequest transactionRequest =
-                        new TransactionRequest( Utils.generateOrderId(), MainActivity.this, 100,
+                  transactionRequest =
+                        new TransactionRequest(Utils.generateOrderId(), MainActivity.this, 100,
                                 id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
 
-                if( transactionRequest != null  && mVeritransSDK != null) {
+                if (transactionRequest != null && mVeritransSDK != null) {
 
                     transactionRequest = addTransactionInfo(transactionRequest);
+                    transactionRequest.enableUi(false);
 
                     //start transaction
                     mVeritransSDK.setTransactionRequest(transactionRequest);
+
+                    mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
+                            TransactionCallback() {
+
+                                @Override
+                                public void onFailure(String errorMessage, TransactionResponse
+                                        transactionResponse) {
+
+                                    Toast.makeText(getApplicationContext(),
+                                            "failed : " + errorMessage, Toast.LENGTH_SHORT).show();
+
+                                }
+
+                                @Override
+                                public void onSuccess(TransactionResponse transactionResponse) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Success: ", Toast.LENGTH_SHORT).show();
+
+
+
+                                    mVeritransSDK.setTransactionRequest(transactionRequest);
+
+                                }
+
+
+                            });
                 }
 
-        /*
+
+                //todo "following code is added to test whether app allow to perform two"
+                //todo "transaction simultaneously in that case sdk should give an error"
+
+
+                //restart transaction
+                //mVeritransSDK.setTransactionRequest(transactionRequest);
+
+
                 //trying to create one more instance for debugging purpose. It should give u an
                 // error message like 'transaction already in progress'.
 
-                VeritransBuilder veritransBuilder = new
-                        VeritransBuilder(MainActivity.this, "dbdy",
-                        Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY, 100);
+                /*VeritransBuilder veritransBuilder2 = new
+                        VeritransBuilder(MainActivity.this,
+                        Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY);
 
                 VeritransSDK veritransSDK2 = veritransBuilder2.buildSDK();
 
                 if(veritransSDK2 == null){
                     Log.d(TAG , "failed to create sdk instance.");
                 }else{
-                    Log.d(TAG , "successfully created sdk instance.");
+                    Log.d(TAG, "successfully created sdk instance.");
                 }*/
 
             }
@@ -139,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Logger.i("clickType"+clickType);
         transactionRequest.setCardPaymentInfo(clickType, isSecure);
-        return  transactionRequest;
+        return transactionRequest;
     }
 
     private void initializeSdk() {
