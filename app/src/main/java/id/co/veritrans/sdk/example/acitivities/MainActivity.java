@@ -3,9 +3,6 @@ package id.co.veritrans.sdk.example.acitivities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.RadioGroup;
 
@@ -18,13 +15,15 @@ import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
+import id.co.veritrans.sdk.models.BillInfoModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
+import id.co.veritrans.sdk.models.ItemDetails;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     private RadioGroup clickradioGroup;
-    private String clickType  = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_NONE;
+    private String clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_NONE;
     private RadioGroup secureradioGroup;
     private boolean isSecure = false;
     private StorageDataHandler storageDataHandler;
@@ -39,9 +38,10 @@ public class MainActivity extends AppCompatActivity {
         deleteBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<CardTokenRequest>cards = new ArrayList<CardTokenRequest>();
+                ArrayList<CardTokenRequest> cards = new ArrayList<CardTokenRequest>();
                 try {
-                    storageDataHandler.writeObject(MainActivity.this, id.co.veritrans.sdk.core.Constants.USERS_SAVED_CARD,cards);
+                    storageDataHandler.writeObject(MainActivity.this, id.co.veritrans.sdk.core
+                            .Constants.USERS_SAVED_CARD, cards);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -55,8 +55,24 @@ public class MainActivity extends AppCompatActivity {
                         VeritransBuilder(MainActivity.this, Utils.generateOrderId(),
                         Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY, 100);
                 veritransBuilder.enableLog(true);
+
+                Logger.i("oneclick" + clickType + "");
+                veritransBuilder.setCardPaymentInfo(clickType, isSecure);
+
+
+                //to  perform transaction using mandiri bill payment.
+                // item details
+                ItemDetails itemDetails = new ItemDetails("1", 25, 4, "pen");
+                ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
+                itemDetailsArrayList.add(itemDetails);
+                veritransBuilder.setItemDetails(itemDetailsArrayList);
+
+                // bill info
+                BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
+                veritransBuilder.setBillInfoModel(billInfoModel);
+
                 //Logger.i("clickType"+clickType);
-                veritransBuilder.setCardPaymentInfo(clickType,isSecure);
+                veritransBuilder.setCardPaymentInfo(clickType, isSecure);
                 veritransBuilder.buildSDK();
 
     /*
@@ -83,10 +99,10 @@ public class MainActivity extends AppCompatActivity {
         clickradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId == R.id.one_click_rd){
+                if (checkedId == R.id.one_click_rd) {
                     Logger.i("one click");
                     clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_ONE_CLICK;
-                } else if(checkedId == R.id.two_click_rd){
+                } else if (checkedId == R.id.two_click_rd) {
                     Logger.i("two click");
                     clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_TWO_CLICK;
                 } else {
@@ -98,26 +114,13 @@ public class MainActivity extends AppCompatActivity {
         secureradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId == R.id.seure_rd){
+                if (checkedId == R.id.seure_rd) {
                     isSecure = true;
-                } else if(checkedId == R.id.unseure_rd){
+                } else if (checkedId == R.id.unseure_rd) {
                     isSecure = false;
                 }
             }
         });
-
-
-
-        //TextView textView = (TextView) findViewById(R.id.txt_payment);
-
-        Animation animation = new TranslateAnimation(0,0, 100,100);
-        animation.setStartOffset(200);
-        animation.setFillAfter(true);
-        animation.setDuration(2000);
-        animation.setInterpolator(new LinearInterpolator());
-        //textView.setAnimation(animation);
-       // animation.set;
-
 
 
     }
