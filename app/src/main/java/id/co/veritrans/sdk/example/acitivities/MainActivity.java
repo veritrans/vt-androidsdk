@@ -42,10 +42,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         storageDataHandler = new StorageDataHandler();
 
-        initializeSdk();
-
+        clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
+        secureradioGroup = (RadioGroup) findViewById(R.id.secure_rg);
         Button payment = (Button) findViewById(R.id.btn_payment);
         Button deleteBt = (Button) findViewById(R.id.btn_delete_cards);
+
+        initializeSdk();
+
         deleteBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // transaction request initialization process.
 
-                  transactionRequest =
+                transactionRequest =
                         new TransactionRequest(Utils.generateOrderId(), MainActivity.this, 100,
                                 id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
 
@@ -93,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                                 public void onSuccess(TransactionResponse transactionResponse) {
                                     Toast.makeText(getApplicationContext(),
                                             "Success: ", Toast.LENGTH_SHORT).show();
-
 
 
                                     mVeritransSDK.setTransactionRequest(transactionRequest);
@@ -131,8 +133,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
-        secureradioGroup = (RadioGroup) findViewById(R.id.secure_rg);
+
         clickradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
