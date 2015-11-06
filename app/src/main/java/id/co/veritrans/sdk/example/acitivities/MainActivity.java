@@ -72,10 +72,12 @@ public class MainActivity extends AppCompatActivity {
                 if (transactionRequest != null && mVeritransSDK != null) {
 
                     transactionRequest = addTransactionInfo(transactionRequest);
-                    transactionRequest.enableUi(true);
-
                     //start transaction
                     mVeritransSDK.setTransactionRequest(transactionRequest);
+
+                    // for ui
+                    mVeritransSDK.startPaymentUiFlow();
+
 
                    /* mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
                             TransactionCallback() {
