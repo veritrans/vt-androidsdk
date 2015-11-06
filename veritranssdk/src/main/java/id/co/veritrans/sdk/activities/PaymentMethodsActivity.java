@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
@@ -46,7 +47,6 @@ public class PaymentMethodsActivity extends AppCompatActivity implements AppBarL
     private AppBarLayout mAppBarLayout = null;
     private FrameLayout mFrameParallax = null;
     private RecyclerView mRecyclerView = null;
-    private CollapsingToolbarLayout mCollapsingToolbarLayout = null;
 
 
     public static void startAlphaAnimation(View v, long duration, int visibility) {
@@ -118,7 +118,7 @@ public class PaymentMethodsActivity extends AppCompatActivity implements AppBarL
         mTitleContainer = (LinearLayout) findViewById(R.id.main_linearlayout_title);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.main_appbar);
         mFrameParallax = (FrameLayout) findViewById(R.id.main_framelayout_title);
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.main_collapsing);
+       // mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.main_collapsing);
     }
 
     private void initParallaxValues() {
@@ -205,15 +205,15 @@ public class PaymentMethodsActivity extends AppCompatActivity implements AppBarL
         int[] paymentImageList = new int[11];
 
         paymentImageList[0] = R.drawable.ic_offers;
-        paymentImageList[1] = R.drawable.ic_launcher; // credit - debit
+        paymentImageList[1] = R.drawable.ic_credit;
         paymentImageList[2] = R.drawable.ic_mandiri;
         paymentImageList[3] = R.drawable.ic_cimb;
         paymentImageList[4] = R.drawable.ic_epay;
         paymentImageList[5] = R.drawable.ic_bbm;
-        paymentImageList[6] = R.drawable.ic_launcher; // indosat dompetku
-        paymentImageList[7] = R.drawable.ic_launcher; // mandiri e-Cash
+        paymentImageList[6] = R.drawable.ic_indosat;
+        paymentImageList[7] = R.drawable.ic_mandiri_e_cash; // mandiri e-Cash
         paymentImageList[8] = R.drawable.ic_banktransfer;
-        paymentImageList[9] = R.drawable.ic_launcher; // mandiri bill payment
+        paymentImageList[9] = R.drawable.ic_mandiri_bill_payment;
         paymentImageList[10] = R.drawable.ic_indomaret;
 
         return paymentImageList;
@@ -225,4 +225,14 @@ public class PaymentMethodsActivity extends AppCompatActivity implements AppBarL
         super.onDestroy();
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+            if( item.getItemId() ==  android.R.id.home){
+                finish();
+            }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
