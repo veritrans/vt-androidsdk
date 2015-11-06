@@ -155,7 +155,10 @@ public class MainActivity extends AppCompatActivity {
                 String amountData = amountEt.getText().toString();
                 int amount = 100;
                 if (amountData != null) {
-                    amount = Integer.parseInt(amountData);
+                    try {
+                        amount = Integer.parseInt(amountData);
+                    }catch (NumberFormatException ex){
+                    }
                 }
 
                 transactionRequest =
