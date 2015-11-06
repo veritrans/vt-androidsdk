@@ -5,19 +5,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import id.co.veritrans.sdk.callbacks.TransactionCallback;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
+import id.co.veritrans.sdk.core.TransactionRequest;
 import id.co.veritrans.sdk.core.VeritransBuilder;
+import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
 import id.co.veritrans.sdk.models.BillInfoModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
 import id.co.veritrans.sdk.models.ItemDetails;
+import id.co.veritrans.sdk.models.TransactionResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,13 +33,22 @@ public class MainActivity extends AppCompatActivity {
     private boolean isSecure = false;
     private StorageDataHandler storageDataHandler;
 
+    private VeritransSDK mVeritransSDK = null;
+    private TransactionRequest transactionRequest = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         storageDataHandler = new StorageDataHandler();
+
+        clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
+        secureradioGroup = (RadioGroup) findViewById(R.id.secure_rg);
         Button payment = (Button) findViewById(R.id.btn_payment);
         Button deleteBt = (Button) findViewById(R.id.btn_delete_cards);
+
+        initializeSdk();
+
         deleteBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,55 +61,79 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         payment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                VeritransBuilder veritransBuilder = new
-                        VeritransBuilder(MainActivity.this, Utils.generateOrderId(),
-                        Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY, 100);
-                veritransBuilder.enableLog(true);
+                // transaction request initialization process.
 
-                Logger.i("oneclick" + clickType + "");
-                veritransBuilder.setCardPaymentInfo(clickType, isSecure);
+                transactionRequest =
+                        new TransactionRequest(Utils.generateOrderId(), MainActivity.this, 100,
+                                id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
+
+                if (transactionRequest != null && mVeritransSDK != null) {
+
+                    transactionRequest = addTransactionInfo(transactionRequest);
+                    transactionRequest.enableUi(false);
+
+                    //start transaction
+                    mVeritransSDK.setTransactionRequest(transactionRequest);
+
+                    mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
+                            TransactionCallback() {
+
+                                @Override
+                                public void onFailure(String errorMessage, TransactionResponse
+                                        transactionResponse) {
+
+                                    Toast.makeText(getApplicationContext(),
+                                            "failed : " + errorMessage, Toast.LENGTH_SHORT).show();
+
+                                }
+
+                                @Override
+                                public void onSuccess(TransactionResponse transactionResponse) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Success: ", Toast.LENGTH_SHORT).show();
 
 
-                //to  perform transaction using mandiri bill payment.
-                // item details
-                ItemDetails itemDetails = new ItemDetails("1", 25, 4, "pen");
-                ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
-                itemDetailsArrayList.add(itemDetails);
-                veritransBuilder.setItemDetails(itemDetailsArrayList);
+                                    mVeritransSDK.setTransactionRequest(transactionRequest);
 
-                // bill info
-                BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
-                veritransBuilder.setBillInfoModel(billInfoModel);
+                                }
 
-                //Logger.i("clickType"+clickType);
-                veritransBuilder.setCardPaymentInfo(clickType, isSecure);
-                veritransBuilder.buildSDK();
 
-    /*
+                            });
+                }
+
+
+                //todo "following code is added to test whether app allow to perform two"
+                //todo "transaction simultaneously in that case sdk should give an error"
+
+
+                //restart transaction
+                //mVeritransSDK.setTransactionRequest(transactionRequest);
+
+
                 //trying to create one more instance for debugging purpose. It should give u an
                 // error message like 'transaction already in progress'.
 
-                VeritransBuilder veritransBuilder = new
-                        VeritransBuilder(MainActivity.this, "dbdy",
-                        Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY, 100);
+                /*VeritransBuilder veritransBuilder2 = new
+                        VeritransBuilder(MainActivity.this,
+                        Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY);
 
                 VeritransSDK veritransSDK2 = veritransBuilder2.buildSDK();
 
                 if(veritransSDK2 == null){
                     Log.d(TAG , "failed to create sdk instance.");
                 }else{
-                    Log.d(TAG , "successfully created sdk instance.");
+                    Log.d(TAG, "successfully created sdk instance.");
                 }*/
 
             }
         });
 
-        clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
-        secureradioGroup = (RadioGroup) findViewById(R.id.secure_rg);
+
         clickradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -123,6 +161,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private TransactionRequest addTransactionInfo(TransactionRequest transactionRequest) {
+        transactionRequest.setCardPaymentInfo(clickType, isSecure);
+        //to  perform transaction using mandiri bill payment.
+        // item details
+        ItemDetails itemDetails = new ItemDetails("1", 25, 4, "pen");
+        ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
+        itemDetailsArrayList.add(itemDetails);
+        transactionRequest.setItemDetails(itemDetailsArrayList);
+
+        // bill info
+        BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
+        transactionRequest.setBillInfoModel(billInfoModel);
+
+        //Logger.i("clickType"+clickType);
+        transactionRequest.setCardPaymentInfo(clickType, isSecure);
+        return transactionRequest;
+    }
+
+    private void initializeSdk() {
+        // sdk initialization process
+        VeritransBuilder veritransBuilder = new
+                VeritransBuilder(getApplicationContext(),
+                Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY);
+        veritransBuilder.enableLog(true);
+
+        mVeritransSDK = veritransBuilder.buildSDK();
     }
 
 }
