@@ -5,12 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import id.co.veritrans.sdk.callbacks.TransactionCallback;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.TransactionRequest;
@@ -22,7 +20,6 @@ import id.co.veritrans.sdk.example.utils.Utils;
 import id.co.veritrans.sdk.models.BillInfoModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
 import id.co.veritrans.sdk.models.ItemDetails;
-import id.co.veritrans.sdk.models.TransactionResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,12 +72,12 @@ public class MainActivity extends AppCompatActivity {
                 if (transactionRequest != null && mVeritransSDK != null) {
 
                     transactionRequest = addTransactionInfo(transactionRequest);
-                    transactionRequest.enableUi(false);
+                    transactionRequest.enableUi(true);
 
                     //start transaction
                     mVeritransSDK.setTransactionRequest(transactionRequest);
 
-                    mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
+                   /* mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
                             TransactionCallback() {
 
                                 @Override
@@ -103,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
 
-                            });
+                            });*/
                 }
 
 
@@ -164,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private TransactionRequest addTransactionInfo(TransactionRequest transactionRequest) {
+
         transactionRequest.setCardPaymentInfo(clickType, isSecure);
         //to  perform transaction using mandiri bill payment.
         // item details
