@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         banktransferCheckBox = (CheckBox) findViewById(R.id.cb_banktransfer);
         mandiriBillCheckBox = (CheckBox) findViewById(R.id.cb_mandiri_bill);
         indomaretCheckBox = (CheckBox) findViewById(R.id.cb_indomaret);
-        amountEt = (EditText) findViewById(R.id.et_amount);
 
+        amountEt = (EditText) findViewById(R.id.et_amount);
         storageDataHandler = new StorageDataHandler();
 
         clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);

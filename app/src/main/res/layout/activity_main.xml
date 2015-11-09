@@ -117,27 +117,27 @@
         <CheckBox android:id="@+id/cb_cimb_clickpay"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:enabled="false"
                   android:text="@string/cimb_clicks"/>
         <CheckBox android:id="@+id/cb_epay_bri"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:enabled="false"
                   android:text="@string/epay_bri"/>
         <CheckBox android:id="@+id/cb_bbm_money"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:enabled="false"
                   android:text="@string/bbm_money"/>
         <CheckBox android:id="@+id/cb_indosat"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:enabled="false"
                   android:text="@string/indosat_dompetku"/>
         <CheckBox android:id="@+id/cb_manidri_ecash"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:enabled="false"
                   android:text="@string/mandiri_e_cash"/>
         <CheckBox android:id="@+id/cb_banktransfer"
                   android:layout_width="match_parent"
@@ -152,7 +152,7 @@
         <CheckBox android:id="@+id/cb_indomaret"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:enabled="false"
                   android:text="@string/indomaret"/>
 
 
