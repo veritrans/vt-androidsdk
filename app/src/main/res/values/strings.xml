@@ -1,6 +1,26 @@
 <resources>
     <string name="app_name">VeritransSdkExample</string>
+    <string name="one_click">One click</string>
+    <string name="two_click">Two click</string>
+    <string name="card_payment_options">Card payment options</string>
+    <string name="security_option">3Ds or not</string>
+    <string name="secure">Secure</string>
+    <string name="unsecure">Unsecure</string>
+    <string name="normal">Normal</string>
+    <string name="delete_saved_cards">Delete saved cards</string>
+    <string name="delete_cards">Delete cards</string>
+    <string name="select_all_payment_methods">Select all payment methods</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="credit_card">Credit/Debit Card</string>
+    <string name="mandiri_clickpay">Mandiri Clickpay</string>
+    <string name="cimb_clicks">CIMB Clicks</string>
+    <string name="epay_bri">ePay BRI</string>
+    <string name="bbm_money">BBM Money</string>
+    <string name="indosat_dompetku">Indosat Dompetku</string>
+    <string name="mandiri_e_cash">Mandiri e-Cash</string>
+    <string name="bank_transfer">Bank Transfer</string>
+    <string name="mandiri_bill_payment">Mandiri Bill Payment</string>
+    <string name="indomaret">Indomaret</string>
+    <string name="offers">Offers</string>
+
 </resources>
