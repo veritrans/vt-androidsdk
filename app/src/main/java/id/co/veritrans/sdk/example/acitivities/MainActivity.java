@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
         transactionRequest.setBillInfoModel(billInfoModel);
 
         //Logger.i("clickType"+clickType);
-        transactionRequest.setCardPaymentInfo(clickType, isSecure);
+        transactionRequest.setCardPaymentInfo(clickType, secureRd.isChecked());
         return transactionRequest;
     }
 
