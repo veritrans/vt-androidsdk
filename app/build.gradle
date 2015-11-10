@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 android {
     compileSdkVersion 23
@@ -9,12 +24,32 @@ android {
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1.0"
+    }
+
+    signingConfigs {
+
+        release{
+            storeFile file('certificates/veritrans_demo_app.jks')
+            storePassword 'veritrans123'
+            keyAlias 'veritrans'
+            keyPassword 'veritrans123'
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    productFlavors {
+        Production {
+            applicationId 'id.co.veritrans.sdk.example'
+        }
+        Beta{
+            applicationId 'id.co.veritrans.sdk.example'
         }
     }
     sourceSets {
@@ -26,4 +61,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':veritranssdk')
     compile 'com.android.support:appcompat-v7:23.1.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+        transitive = true;
+    }
 }
