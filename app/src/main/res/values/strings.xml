@@ -5,7 +5,7 @@
     <string name="card_payment_options">Card payment options</string>
     <string name="security_option">3Ds or not</string>
     <string name="secure">Secure</string>
-    <string name="unsecure">Unsecure</string>
+    <string name="unsecure">Insecure</string>
     <string name="normal">Normal</string>
     <string name="delete_saved_cards">Delete saved cards</string>
     <string name="delete_cards">Delete cards</string>
