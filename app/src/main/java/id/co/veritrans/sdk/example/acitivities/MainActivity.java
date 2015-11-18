@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.TransactionRequest;
@@ -73,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
         indomaretCheckBox = (CheckBox) findViewById(R.id.cb_indomaret);
 
         amountEt = (EditText) findViewById(R.id.et_amount);
+
+        if(BuildConfig.DEBUG){
+            amountEt.setText("1000");
+        }
+
+
         storageDataHandler = new StorageDataHandler();
 
         clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
