@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                     if(transactionResponse != null ) {
                         SdkUtil.showSnackbar(MainActivity.this, transactionResponse.getStatusMessage());
                         Log.d(TAG, "transaction message " + transactionResponse.getStatusMessage());
-                        updateMerchantServer();
+                       // MerchantServer();
                     }
                 }
 
