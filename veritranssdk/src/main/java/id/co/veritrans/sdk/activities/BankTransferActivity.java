@@ -49,9 +49,11 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
 
     private BankTransferFragment bankTransferFragment = null;
     private TransactionResponse mTransactionResponse = null;
+    private String errorMessage = null;
     private CollapsingToolbarLayout mCollapsingToolbarLayout = null;
 
     private int position = Constants.PAYMENT_METHOD_MANDIRI_BILL_PAYMENT;
+    private int RESULT_CODE = RESULT_CANCELED;
 
 
     @Override
@@ -75,7 +77,6 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
         bindDataToView();
 
         setUpHomeFragment();
-
     }
 
     private void setUpHomeFragment() {
@@ -104,8 +105,7 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
             finish();
         }*/
 
-        finish();
-
+        setResultAndFinish();
     }
 
     @Override
@@ -177,10 +177,12 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
                 if (mTransactionResponse != null) {
                     setUpTransactionStatusFragment(mTransactionResponse);
                 } else {
+                    RESULT_CODE = RESULT_OK;
                     SdkUtil.showSnackbar(BankTransferActivity.this, SOMETHING_WENT_WRONG);
                     onBackPressed();
                 }
             } else {
+                RESULT_CODE = RESULT_OK;
                 onBackPressed();
             }
 
@@ -197,20 +199,18 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
         currentFragment = STATUS_FRAGMENT;
         mButtonConfirmPayment.setText(R.string.done);
 
-
         mCollapsingToolbarLayout.setVisibility(View.GONE);
-
         mToolbar.setNavigationIcon(R.drawable.ic_close);
         setSupportActionBar(mToolbar);
 
         BankTransactionStatusFragment bankTransactionStatusFragment =
                 BankTransactionStatusFragment.newInstance(transactionResponse);
+
         // setup transaction status fragment
         fragmentTransaction.replace(R.id.bank_transfer_container,
                 bankTransactionStatusFragment, STATUS_FRAGMENT);
         fragmentTransaction.addToBackStack(STATUS_FRAGMENT);
         fragmentTransaction.commit();
-
     }
 
 
@@ -318,10 +318,11 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
             public void onFailure(String errorMessage, TransactionResponse transactionResponse) {
 
                 try {
+                    BankTransferActivity.this.errorMessage = errorMessage;
+                    mTransactionResponse = transactionResponse;
 
                     SdkUtil.hideProgressDialog();
                     SdkUtil.showSnackbar(BankTransferActivity.this, "" + errorMessage);
-
                 } catch (NullPointerException ex) {
                     Logger.e("transaction error is " + errorMessage);
                 }
@@ -338,35 +339,32 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
         veritransSDK.paymentUsingMandiriBillPay(BankTransferActivity.this, new
                 TransactionCallback() {
 
-            @Override
-            public void onSuccess(TransactionResponse
-                                          mandiriBillPayTransferResponse) {
+                    @Override
+                    public void onSuccess(TransactionResponse
+                                                  mandiriBillPayTransferResponse) {
 
-                SdkUtil.hideProgressDialog();
+                        SdkUtil.hideProgressDialog();
 
-                if (mandiriBillPayTransferResponse != null) {
-                    mTransactionResponse = mandiriBillPayTransferResponse;
-                    mAppBarLayout.setExpanded(true);
-                    setUpTransactionFragment(mandiriBillPayTransferResponse);
-                } else {
-                    onBackPressed();
-                }
+                        if (mandiriBillPayTransferResponse != null) {
+                            mTransactionResponse = mandiriBillPayTransferResponse;
+                            mAppBarLayout.setExpanded(true);
+                            setUpTransactionFragment(mandiriBillPayTransferResponse);
+                        } else {
+                            onBackPressed();
+                        }
 
-            }
+                    }
 
-            @Override
-            public void onFailure(String errorMessage, TransactionResponse transactionResponse) {
-
-                try {
-
-                    SdkUtil.hideProgressDialog();
-                    SdkUtil.showSnackbar(BankTransferActivity.this, "" + errorMessage);
-
-                } catch (NullPointerException ex) {
-                    Logger.e("transaction error is " + errorMessage);
-                }
-            }
-        });
+                    @Override
+                    public void onFailure(String errorMessage, TransactionResponse transactionResponse) {
+                        try {
+                            SdkUtil.hideProgressDialog();
+                            SdkUtil.showSnackbar(BankTransferActivity.this, "" + errorMessage);
+                        } catch (NullPointerException ex) {
+                            Logger.e("transaction error is " + errorMessage);
+                        }
+                    }
+                });
     }
 
     public int getPosition() {
@@ -378,5 +376,14 @@ public class BankTransferActivity extends AppCompatActivity implements View.OnCl
         if (mButtonConfirmPayment != null) {
             mButtonConfirmPayment.setText(getResources().getString(R.string.retry));
         }
+    }
+
+
+    private void setResultAndFinish(){
+        Intent data = new Intent();
+        data.putExtra(Constants.TRANSACTION_RESPONSE, mTransactionResponse);
+        data.putExtra(Constants.TRANSACTION_ERROR_MESSAGE, errorMessage);
+        setResult(RESULT_CODE, data);
+        finish();
     }
 }
