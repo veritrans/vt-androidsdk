@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         amountEt = (EditText) findViewById(R.id.et_amount);
 
         if(BuildConfig.DEBUG){
-            amountEt.setText("1000");
+            amountEt.setText("100");
         }
 
 
@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String amountData = amountEt.getText().toString();
                 int amount = 100;
+
                 if (amountData != null) {
                     try {
                         amount = Integer.parseInt(amountData);
@@ -332,14 +333,14 @@ public class MainActivity extends AppCompatActivity {
 
         paymentImageList[0] = id.co.veritrans.sdk.R.drawable.ic_offers;
         paymentImageList[1] = id.co.veritrans.sdk.R.drawable.ic_credit;
-        paymentImageList[2] = id.co.veritrans.sdk.R.drawable.ic_mandiri;
+        paymentImageList[2] = id.co.veritrans.sdk.R.drawable.ic_mandiri2;
         paymentImageList[3] = id.co.veritrans.sdk.R.drawable.ic_cimb;
         paymentImageList[4] = id.co.veritrans.sdk.R.drawable.ic_epay;
         paymentImageList[5] = id.co.veritrans.sdk.R.drawable.ic_bbm;
         paymentImageList[6] = id.co.veritrans.sdk.R.drawable.ic_indosat;
         paymentImageList[7] = id.co.veritrans.sdk.R.drawable.ic_mandiri_e_cash; // mandiri e-Cash
-        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_banktransfer;
-        paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment;
+        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_banktransfer2;
+        paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment2;
         paymentImageList[10] = id.co.veritrans.sdk.R.drawable.ic_indomaret;
         return paymentImageList;
     }
