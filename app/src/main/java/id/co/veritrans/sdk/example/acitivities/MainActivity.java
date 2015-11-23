@@ -307,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
         veritransBuilder.enableLog(true);
 
         mVeritransSDK = veritransBuilder.buildSDK();
+
     }
 
     /**
