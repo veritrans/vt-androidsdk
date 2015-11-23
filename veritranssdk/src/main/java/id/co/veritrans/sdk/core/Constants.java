@@ -44,6 +44,9 @@ public class Constants {
     public static final String BASE_URL_FOR_DEBUG = "https://api.sandbox.veritrans.co.id/v2/";
     public static final String BASE_URL_FOR_RELEASE = "https://api.sandbox.veritrans.co.id/v2/";
 
+    public static final String BASE_URL_MERCHANT_FOR_DEBUG = "https://hangout.betas.in/veritrans/api/";
+    public static final String BASE_URL_MERCHANT_FOR_RELEASE = "https://hangout.betas.in/veritrans/api/";
+
 
     public static final String DIR_APP = "VeritransData";
     public static final String CURRENCY_PREFIX = "Rp";
@@ -88,5 +91,11 @@ public class Constants {
     public static final String USERS_SAVED_CARD = "users_saved_card";
 
     public static final String BANK_DETAILS = "bank_details";
+    public static final String VISA_REGEX= "^4[0-9]{12}(?:[0-9]{3})?$";
+    public static final String MASTERCARD_REGEX= "^5[1-5][0-9]{14}$";
+    public static final String AMEX_REGEX="^3[47][0-9]{13}$";
+    public static final String CARD_TYPE_VISA = "VISA";
+    public static final String CARD_TYPE_MASTERCARD = "MASTERCARD";
+    public static final String SUCCESS = "SUCCESS";
 }
 

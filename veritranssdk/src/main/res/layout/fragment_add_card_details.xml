@@ -27,7 +27,7 @@
                 android:singleLine="true"/>
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+       <!-- <android.support.design.widget.TextInputLayout
             android:id="@+id/til_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,13 +42,13 @@
                 android:hint="@string/hint_name_on_card"
                 android:maxLength="50"
                 android:singleLine="true"/>
-        </android.support.design.widget.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>-->
 
         <LinearLayout
             android:id="@+id/expiry_date_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/til_user_name"
+            android:layout_below="@id/til_card_no"
             android:layout_marginTop="@dimen/eight_dp"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/eight_dp"
@@ -87,7 +87,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_cvv"
-                        android:inputType="number"
+                        android:inputType="numberPassword"
                         android:maxLength="3"
                         android:paddingRight="32dp"
                         android:singleLine="true"/>
@@ -95,7 +95,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageView
-                    android:id="@+id/question_img"
+                    android:id="@+id/image_question"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -109,14 +109,24 @@
 
         <CheckBox
             android:id="@+id/cb_store_card"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/expiry_date_layout"
             android:layout_marginBottom="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/save_card_message"
             />
-
+        <ImageView
+            android:id="@+id/image_question_save_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/sixteen_dp"
+            android:src="@drawable/ic_cvvinfo"
+            android:layout_below="@id/expiry_date_layout"
+            android:layout_toRightOf="@id/cb_store_card"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

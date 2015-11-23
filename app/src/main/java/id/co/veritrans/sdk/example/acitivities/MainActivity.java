@@ -9,11 +9,10 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.TransactionRequest;
@@ -59,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
+
+
         setContentView(R.layout.activity_main);
         creditCardCheckBox = (CheckBox) findViewById(R.id.cb_credit_card);
         mandiriClickpayCheckBox = (CheckBox) findViewById(R.id.cb_mandiri_clickpay);
@@ -73,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
         indomaretCheckBox = (CheckBox) findViewById(R.id.cb_indomaret);
 
         amountEt = (EditText) findViewById(R.id.et_amount);
+
+        if(BuildConfig.DEBUG){
+            amountEt.setText("100");
+        }
+
+
         storageDataHandler = new StorageDataHandler();
 
         clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
@@ -157,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String amountData = amountEt.getText().toString();
                 int amount = 100;
+
                 if (amountData != null) {
                     try {
                         amount = Integer.parseInt(amountData);
@@ -299,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
         veritransBuilder.enableLog(true);
 
         mVeritransSDK = veritransBuilder.buildSDK();
+
     }
 
     /**
@@ -325,14 +334,14 @@ public class MainActivity extends AppCompatActivity {
 
         paymentImageList[0] = id.co.veritrans.sdk.R.drawable.ic_offers;
         paymentImageList[1] = id.co.veritrans.sdk.R.drawable.ic_credit;
-        paymentImageList[2] = id.co.veritrans.sdk.R.drawable.ic_mandiri;
+        paymentImageList[2] = id.co.veritrans.sdk.R.drawable.ic_mandiri2;
         paymentImageList[3] = id.co.veritrans.sdk.R.drawable.ic_cimb;
         paymentImageList[4] = id.co.veritrans.sdk.R.drawable.ic_epay;
         paymentImageList[5] = id.co.veritrans.sdk.R.drawable.ic_bbm;
         paymentImageList[6] = id.co.veritrans.sdk.R.drawable.ic_indosat;
         paymentImageList[7] = id.co.veritrans.sdk.R.drawable.ic_mandiri_e_cash; // mandiri e-Cash
-        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_banktransfer;
-        paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment;
+        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_banktransfer2;
+        paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment2;
         paymentImageList[10] = id.co.veritrans.sdk.R.drawable.ic_indomaret;
         return paymentImageList;
     }
