@@ -1,7 +1,9 @@
 package id.co.veritrans.sdk.example.acitivities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -12,6 +14,7 @@ import android.widget.RadioGroup;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import id.co.veritrans.sdk.core.SdkUtil;
 import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
@@ -25,6 +28,8 @@ import id.co.veritrans.sdk.models.BillInfoModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
 import id.co.veritrans.sdk.models.ItemDetails;
 import id.co.veritrans.sdk.models.PaymentMethodsModel;
+import id.co.veritrans.sdk.models.TransactionResponse;
+import id.co.veritrans.sdk.models.TransactionStatusResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -343,7 +348,34 @@ public class MainActivity extends AppCompatActivity {
         paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_banktransfer2;
         paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment2;
         paymentImageList[10] = id.co.veritrans.sdk.R.drawable.ic_indomaret;
+
         return paymentImageList;
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if( requestCode == id.co.veritrans.sdk.core.Constants.RESULT_CODE_PAYMENT_TRANSFER ){
+
+            if(resultCode == RESULT_OK ){
+                Log.d(TAG, "transaction successful.");
+
+                if(data != null) {
+                    String errorMessage = data.getStringExtra(id.co.veritrans.sdk.core.Constants.TRANSACTION_ERROR_MESSAGE);
+                    TransactionResponse transactionResponse= (TransactionResponse) data.getSerializableExtra(id.co.veritrans.sdk.core.Constants.TRANSACTION_RESPONSE);
+                    Log.d(TAG, "transaction error message " +errorMessage);
+                    if(transactionResponse != null ) {
+                        SdkUtil.showSnackbar(MainActivity.this, transactionResponse.getStatusMessage());
+                        Log.d(TAG, "transaction message " + transactionResponse.getStatusMessage());
+                        updateMerchantServer();
+                    }
+                }
+
+            }else {
+                Log.d(TAG, "failed to perform transaction");
+            }
+        }
+
+    }
 }
