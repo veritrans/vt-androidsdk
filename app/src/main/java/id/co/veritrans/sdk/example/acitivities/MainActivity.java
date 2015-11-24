@@ -17,6 +17,7 @@ import android.widget.RadioGroup;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import id.co.veritrans.sdk.callbacks.TransactionCallback;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.SdkUtil;
 import id.co.veritrans.sdk.core.StorageDataHandler;
@@ -194,6 +195,19 @@ public class MainActivity extends AppCompatActivity {
                     mVeritransSDK.startPaymentUiFlow();
 
 
+                    mVeritransSDK.paymentUsingPermataBank(MainActivity.this, new TransactionCallback() {
+
+
+                        @Override
+                        public void onFailure(String errorMessage, TransactionResponse transactionResponse) {
+                            Log.d(" Transaction failed ", ""+errorMessage);
+                        }
+
+                        @Override
+                        public void onSuccess(TransactionResponse transactionResponse) {
+                            Log.d(" Transaction status ", ""+transactionResponse.getStatusMessage());
+                        }
+                    });
                 }
 
                 // "following code is added to test whether app allow to perform two"
