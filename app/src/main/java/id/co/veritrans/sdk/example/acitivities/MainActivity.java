@@ -1,6 +1,9 @@
 package id.co.veritrans.sdk.example.acitivities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,13 +17,13 @@ import android.widget.RadioGroup;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import id.co.veritrans.sdk.core.SdkUtil;
-import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.core.Logger;
+import id.co.veritrans.sdk.core.SdkUtil;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.TransactionRequest;
 import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.core.VeritransSDK;
+import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
@@ -29,7 +32,6 @@ import id.co.veritrans.sdk.models.CardTokenRequest;
 import id.co.veritrans.sdk.models.ItemDetails;
 import id.co.veritrans.sdk.models.PaymentMethodsModel;
 import id.co.veritrans.sdk.models.TransactionResponse;
-import id.co.veritrans.sdk.models.TransactionStatusResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         amountEt = (EditText) findViewById(R.id.et_amount);
 
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             amountEt.setText("100");
         }
 
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 if (amountData != null) {
                     try {
                         amount = Integer.parseInt(amountData);
-                    }catch (NumberFormatException ex){
+                    } catch (NumberFormatException ex) {
                     }
                 }
 
@@ -192,43 +194,10 @@ public class MainActivity extends AppCompatActivity {
                     mVeritransSDK.startPaymentUiFlow();
 
 
-                   /* mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
-                    transactionRequest.enableUi(true);
-
-                    //start transaction
-                    mVeritransSDK.setTransactionRequest(transactionRequest);
-
-                  /*  mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
->>>>>>> 885b16fcca655090684739ba259f990f7d085e02
-                            TransactionCallback() {
-
-                                @Override
-                                public void onFailure(String errorMessage, TransactionResponse
-                                        transactionResponse) {
-
-                                    Toast.makeText(getApplicationContext(),
-                                            "failed : " + errorMessage, Toast.LENGTH_SHORT).show();
-
-                                }
-
-                                @Override
-                                public void onSuccess(TransactionResponse transactionResponse) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Success: ", Toast.LENGTH_SHORT).show();
-
-                                    mVeritransSDK.setTransactionRequest(transactionRequest);
-
-                                }
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 885b16fcca655090684739ba259f990f7d085e02
-                            });*/
                 }
 
-                //todo "following code is added to test whether app allow to perform two"
-                //todo "transaction simultaneously in that case sdk should give an error"
+                // "following code is added to test whether app allow to perform two"
+                // "transaction simultaneously in that case sdk should give an error"
 
                 //restart transaction
                 //mVeritransSDK.setTransactionRequest(transactionRequest);
@@ -251,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         clickradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -272,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         secureradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -353,29 +324,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /**
+     * onReceive will get called when transaction gets completed.
+     */
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-        if( requestCode == id.co.veritrans.sdk.core.Constants.RESULT_CODE_PAYMENT_TRANSFER ){
+            Logger.d(TAG, "in onReceive  ");
 
-            if(resultCode == RESULT_OK ){
-                Log.d(TAG, "transaction successful.");
+            if (intent != null) {
 
-                if(data != null) {
-                    String errorMessage = data.getStringExtra(id.co.veritrans.sdk.core.Constants.TRANSACTION_ERROR_MESSAGE);
-                    TransactionResponse transactionResponse= (TransactionResponse) data.getSerializableExtra(id.co.veritrans.sdk.core.Constants.TRANSACTION_RESPONSE);
-                    Log.d(TAG, "transaction error message " +errorMessage);
-                    if(transactionResponse != null ) {
-                        SdkUtil.showSnackbar(MainActivity.this, transactionResponse.getStatusMessage());
-                        Log.d(TAG, "transaction message " + transactionResponse.getStatusMessage());
-                       // MerchantServer();
-                    }
+                String errorMessage = intent.getStringExtra(id.co.veritrans.sdk.core.Constants
+                        .TRANSACTION_ERROR_MESSAGE);
+                TransactionResponse transactionResponse = (TransactionResponse) intent
+                        .getSerializableExtra(id.co
+                                .veritrans.sdk.core.Constants.TRANSACTION_RESPONSE);
+
+                Log.d(TAG, "transaction error message " + errorMessage);
+
+                if (transactionResponse != null) {
+                    SdkUtil.showSnackbar(MainActivity.this, transactionResponse
+                            .getStatusMessage());
+                    Log.d(TAG, "transaction message " + transactionResponse.getStatusMessage());
+                    // update Merchant Server;
+                    Utils.updateMerchantServer(MainActivity.this, transactionResponse);
+                } else {
+                    Log.d(TAG, "Transaction failed.");
                 }
 
-            }else {
-                Log.d(TAG, "failed to perform transaction");
             }
-        }
 
+        }
+    };
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(id.co.veritrans.sdk.core.Constants.EVENT_TRANSACTION_COMPLETE);
+        registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 }
