@@ -7,12 +7,14 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.UUID;
 
-import id.co.veritrans.sdk.callbacks.UpdateTransactionCallBack;
-import id.co.veritrans.sdk.core.*;
+import id.co.veritrans.sdk.core.Logger;
+import id.co.veritrans.sdk.core.StorageDataHandler;
+import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.example.model.ApiInterface;
-import id.co.veritrans.sdk.models.TransactionMerchant;
+import id.co.veritrans.sdk.example.model.TransactionUpdateMerchantResponse;
+import id.co.veritrans.sdk.example.model.UpdateTransactionCallBack;
+import id.co.veritrans.sdk.example.model.TransactionMerchant;
 import id.co.veritrans.sdk.models.TransactionResponse;
-import id.co.veritrans.sdk.models.TransactionUpdateMerchantResponse;
 import id.co.veritrans.sdk.models.UserDetail;
 import rx.Observable;
 import rx.Observer;
