@@ -1,7 +1,5 @@
 package id.co.veritrans.sdk.example.model;
 
-import id.co.veritrans.sdk.models.TransactionMerchant;
-import id.co.veritrans.sdk.models.TransactionUpdateMerchantResponse;
 import retrofit.http.Body;
 import retrofit.http.Headers;
 import retrofit.http.POST;
