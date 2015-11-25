@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (transactionRequest != null && mVeritransSDK != null) {
 
-                    transactionRequest = addTransactionInfo(transactionRequest);
+                    transactionRequest = addTransactionInfo(transactionRequest, amount);
                     //start transaction
                     mVeritransSDK.setTransactionRequest(transactionRequest);
 
@@ -270,12 +270,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private TransactionRequest addTransactionInfo(TransactionRequest transactionRequest) {
+    private TransactionRequest addTransactionInfo(TransactionRequest transactionRequest, double amount) {
 
         transactionRequest.setCardPaymentInfo(clickType, isSecure);
         //to  perform transaction using mandiri bill payment.
         // item details
-        ItemDetails itemDetails = new ItemDetails("1", 25, 4, "pen");
+        ItemDetails itemDetails = new ItemDetails("1", amount, 1, "pen");
         ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
         itemDetailsArrayList.add(itemDetails);
         transactionRequest.setItemDetails(itemDetailsArrayList);
@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
         paymentImageList[5] = id.co.veritrans.sdk.R.drawable.ic_bbm;
         paymentImageList[6] = id.co.veritrans.sdk.R.drawable.ic_indosat;
         paymentImageList[7] = id.co.veritrans.sdk.R.drawable.ic_mandiri_e_cash; // mandiri e-Cash
-        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_banktransfer2;
+        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_atm;
         paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment2;
         paymentImageList[10] = id.co.veritrans.sdk.R.drawable.ic_indomaret;
 
