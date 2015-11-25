@@ -73,6 +73,13 @@ public class CardDetailFragment extends Fragment {
         Logger.i("cardDetail:" + cardDetail.getString());
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SdkUtil.hideKeyboard(getActivity());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -230,6 +237,7 @@ public class CardDetailFragment extends Fragment {
                 VeritransDialog veritransDialog = new VeritransDialog(getActivity(), getResources().getDrawable(R.drawable.cvv_dialog_image,null),
                         getString(R.string.message_cvv), getString(R.string.got_it), "");
                 veritransDialog.show();
+                SdkUtil.hideKeyboard(getActivity()); // hide keyboard if visible.
             }
         });
 
