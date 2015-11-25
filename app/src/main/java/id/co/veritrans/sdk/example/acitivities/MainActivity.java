@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     mVeritransSDK.startPaymentUiFlow();
 
 
-                    mVeritransSDK.paymentUsingPermataBank(MainActivity.this, new TransactionCallback() {
+                    mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new TransactionCallback() {
 
 
                         @Override
