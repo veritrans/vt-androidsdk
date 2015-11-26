@@ -10,17 +10,26 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btn_ui_flow"
+    <EditText
+        android:id="@+id/et_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ui_flow"/>
+        android:layout_marginBottom="@dimen/sixteen_dp"
+        android:hint="@string/payable_amount"
+        android:inputType="number"
+        />
+
+    <Button
+        android:id="@+id/btn_using_mandiri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/using_mandiri"/>
 
     <Button
         android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:id="@+id/btn_core_flow"
+        android:id="@+id/btn_using_credit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/core_flow"/>
+        android:text="@string/using_credit"/>
 
 </LinearLayout>
