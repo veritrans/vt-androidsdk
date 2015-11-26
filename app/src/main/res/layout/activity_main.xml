@@ -131,7 +131,7 @@
         <CheckBox android:id="@+id/cb_epay_bri"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:enabled="false"
+                  android:checked="true"
                   android:text="@string/epay_bri"/>
         <CheckBox android:id="@+id/cb_bbm_money"
                   android:layout_width="match_parent"
