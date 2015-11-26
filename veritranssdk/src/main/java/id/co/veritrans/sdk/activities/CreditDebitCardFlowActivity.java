@@ -54,6 +54,7 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
         TransactionCallback {
     private static final int PAYMENT_WEB_INTENT = 100;
     private static final int PAY_USING_CARD = 51;
+    private  int RESULT_CODE = RESULT_CANCELED;
     private Toolbar toolbar;
     private String currentFragmentName;
     private FragmentManager fragmentManager;
@@ -69,6 +70,10 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
     private ArrayList<BankDetail> bankDetails;
     private Subscription subscription;
 
+    //for setResult
+    private TransactionResponse transactionResponse = null;
+    private String errorMessage = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +87,8 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         calculateScreenWidth();
+        /*BlankFragment blankFragment = BlankFragment.newInstance();
+        replaceFragment(blankFragment,true,false);*/
         if(getCreditCards() == null || getCreditCards().isEmpty()){
             AddCardDetailsFragment addCardDetailsFragment = AddCardDetailsFragment
                     .newInstance();
@@ -107,11 +114,11 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
     @Override
     public void onBackPressed() {
         if (fragmentManager.getBackStackEntryCount() == 1) {
-            finish();
+            setResultAndFinish();
         } else {
             if (currentFragmentName.equalsIgnoreCase(PaymentTransactionStatusFragment.class
                     .getName())) {
-                finish();
+                setResultAndFinish();
             } else {
                 super.onBackPressed();
             }
@@ -292,6 +299,9 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
     @Override
     public void onFailure(String errorMessage, TransactionResponse transactionResponse) {
 
+        CreditDebitCardFlowActivity.this.transactionResponse = transactionResponse;
+        CreditDebitCardFlowActivity.this.errorMessage = errorMessage;
+
         SdkUtil.hideProgressDialog();
         PaymentTransactionStatusFragment paymentTransactionStatusFragment =
                 PaymentTransactionStatusFragment.newInstance(transactionResponse);
@@ -305,10 +315,15 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
     //onSuccess for transaction api call
     @Override
     public void onSuccess(TransactionResponse cardPaymentResponse) {
+
         SdkUtil.hideProgressDialog();
         Logger.i("cardPaymentResponse:" + cardPaymentResponse.getStatusCode());
+
         if (cardPaymentResponse.getStatusCode().equalsIgnoreCase(Constants.SUCCESS_CODE_200) ||
                 cardPaymentResponse.getStatusCode().equalsIgnoreCase(Constants.SUCCESS_CODE_201)) {
+
+            transactionResponse = cardPaymentResponse;
+
             PaymentTransactionStatusFragment paymentTransactionStatusFragment =
                     PaymentTransactionStatusFragment.newInstance(cardPaymentResponse);
             replaceFragment(paymentTransactionStatusFragment, true, false);
@@ -490,5 +505,18 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
                     .subscribe(subscriber);
 
         }
+    }
+
+
+    public void setResultAndFinish(){
+        Intent data = new Intent();
+        data.putExtra(Constants.TRANSACTION_RESPONSE, transactionResponse);
+        data.putExtra(Constants.TRANSACTION_ERROR_MESSAGE, errorMessage);
+        setResult(RESULT_CODE, data);
+        finish();
+    }
+
+    public void setResultCode(int resultCode) {
+        this.RESULT_CODE = resultCode;
     }
 }

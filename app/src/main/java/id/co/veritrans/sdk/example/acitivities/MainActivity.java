@@ -1,7 +1,12 @@
 package id.co.veritrans.sdk.example.acitivities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -12,12 +17,13 @@ import android.widget.RadioGroup;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.core.Logger;
+import id.co.veritrans.sdk.core.SdkUtil;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.TransactionRequest;
 import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.core.VeritransSDK;
+import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
@@ -25,6 +31,7 @@ import id.co.veritrans.sdk.models.BillInfoModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
 import id.co.veritrans.sdk.models.ItemDetails;
 import id.co.veritrans.sdk.models.PaymentMethodsModel;
+import id.co.veritrans.sdk.models.TransactionResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         amountEt = (EditText) findViewById(R.id.et_amount);
 
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             amountEt.setText("100");
         }
 
@@ -168,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 if (amountData != null) {
                     try {
                         amount = Integer.parseInt(amountData);
-                    }catch (NumberFormatException ex){
+                    } catch (NumberFormatException ex) {
                     }
                 }
 
@@ -179,51 +186,17 @@ public class MainActivity extends AppCompatActivity {
 
                 if (transactionRequest != null && mVeritransSDK != null) {
 
-                    transactionRequest = addTransactionInfo(transactionRequest);
+                    transactionRequest = addTransactionInfo(transactionRequest, amount);
                     //start transaction
                     mVeritransSDK.setTransactionRequest(transactionRequest);
 
                     // for ui
                     mVeritransSDK.startPaymentUiFlow();
 
-
-                   /* mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
-                    transactionRequest.enableUi(true);
-
-                    //start transaction
-                    mVeritransSDK.setTransactionRequest(transactionRequest);
-
-                  /*  mVeritransSDK.paymentUsingMandiriBillPay(MainActivity.this, new
->>>>>>> 885b16fcca655090684739ba259f990f7d085e02
-                            TransactionCallback() {
-
-                                @Override
-                                public void onFailure(String errorMessage, TransactionResponse
-                                        transactionResponse) {
-
-                                    Toast.makeText(getApplicationContext(),
-                                            "failed : " + errorMessage, Toast.LENGTH_SHORT).show();
-
-                                }
-
-                                @Override
-                                public void onSuccess(TransactionResponse transactionResponse) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Success: ", Toast.LENGTH_SHORT).show();
-
-                                    mVeritransSDK.setTransactionRequest(transactionRequest);
-
-                                }
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 885b16fcca655090684739ba259f990f7d085e02
-                            });*/
                 }
 
-                //todo "following code is added to test whether app allow to perform two"
-                //todo "transaction simultaneously in that case sdk should give an error"
+                // "following code is added to test whether app allow to perform two"
+                // "transaction simultaneously in that case sdk should give an error"
 
                 //restart transaction
                 //mVeritransSDK.setTransactionRequest(transactionRequest);
@@ -246,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         clickradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -267,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         secureradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -280,12 +255,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private TransactionRequest addTransactionInfo(TransactionRequest transactionRequest) {
+    private TransactionRequest addTransactionInfo(TransactionRequest transactionRequest, double amount) {
 
         transactionRequest.setCardPaymentInfo(clickType, isSecure);
         //to  perform transaction using mandiri bill payment.
         // item details
-        ItemDetails itemDetails = new ItemDetails("1", 25, 4, "pen");
+        ItemDetails itemDetails = new ItemDetails("1", amount, 1, "pen");
         ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
         itemDetailsArrayList.add(itemDetails);
         transactionRequest.setItemDetails(itemDetailsArrayList);
@@ -340,10 +315,61 @@ public class MainActivity extends AppCompatActivity {
         paymentImageList[5] = id.co.veritrans.sdk.R.drawable.ic_bbm;
         paymentImageList[6] = id.co.veritrans.sdk.R.drawable.ic_indosat;
         paymentImageList[7] = id.co.veritrans.sdk.R.drawable.ic_mandiri_e_cash; // mandiri e-Cash
-        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_banktransfer2;
+        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_atm;
         paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment2;
         paymentImageList[10] = id.co.veritrans.sdk.R.drawable.ic_indomaret;
+
         return paymentImageList;
     }
 
+
+    /**
+     * onReceive will get called when transaction gets completed.
+     */
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Logger.d(TAG, "in onReceive  ");
+
+            if (intent != null) {
+
+                String errorMessage = intent.getStringExtra(id.co.veritrans.sdk.core.Constants
+                        .TRANSACTION_ERROR_MESSAGE);
+                TransactionResponse transactionResponse = (TransactionResponse) intent
+                        .getSerializableExtra(id.co
+                                .veritrans.sdk.core.Constants.TRANSACTION_RESPONSE);
+
+                Log.d(TAG, "transaction error message " + errorMessage);
+
+                if (transactionResponse != null) {
+                    SdkUtil.showSnackbar(MainActivity.this, transactionResponse
+                            .getStatusMessage());
+                    Log.d(TAG, "transaction message " + transactionResponse.getStatusMessage());
+                    // update Merchant Server;
+                    Utils.updateMerchantServer(MainActivity.this, transactionResponse);
+                } else {
+                    Log.d(TAG, "Transaction failed.");
+                }
+
+            }
+
+        }
+    };
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(id.co.veritrans.sdk.core.Constants.EVENT_TRANSACTION_COMPLETE);
+        registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
 }

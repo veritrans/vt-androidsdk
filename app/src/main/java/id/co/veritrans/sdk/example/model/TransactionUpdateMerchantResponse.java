@@ -1,4 +1,4 @@
-package id.co.veritrans.sdk.models;
+package id.co.veritrans.sdk.example.model;
 
 import android.text.TextUtils;
 
