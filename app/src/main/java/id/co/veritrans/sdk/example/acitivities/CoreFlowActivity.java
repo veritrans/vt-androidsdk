@@ -58,10 +58,6 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
         mVeritransSDK = ((VeritransExampleApp) getApplication()).getVeritransSDK();
 
-        transactionRequest =
-                new TransactionRequest(Utils.generateOrderId(), CoreFlowActivity.this, getAmount(),
-                        id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
-
 
         // "following code is added to test whether app allow to perform two"
         // "transaction simultaneously in that case sdk should give an error"
@@ -89,19 +85,16 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * it adds all required information related to mandiri bill payment.
-     *
-     * @param transactionRequest
-     * @param amount
-     * @return
      */
-    private TransactionRequest addTransactionInfoForMandiri(TransactionRequest
-                                                                    transactionRequest,
-                                                            double amount) {
+    private void addTransactionInfoForMandiri() {
 
         //to  perform transaction using mandiri bill payment.
+        transactionRequest =
+                new TransactionRequest(Utils.generateOrderId(), CoreFlowActivity.this, getAmount(),
+                        id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
 
         // item details
-        ItemDetails itemDetails = new ItemDetails("1", amount, 1, "pen");
+        ItemDetails itemDetails = new ItemDetails("1", getAmount(), 1, "pen");
         ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
         itemDetailsArrayList.add(itemDetails);
         transactionRequest.setItemDetails(itemDetailsArrayList);
@@ -110,16 +103,26 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
         BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
         transactionRequest.setBillInfoModel(billInfoModel);
 
-        return transactionRequest;
+
     }
 
     @Override
     public void onClick(View view) {
 
         if (view.getId() == R.id.btn_using_mandiri) {
-            performTransactionUsingMandiri();
+
+            if (transactionRequest == null && mVeritransSDK != null) {
+
+                addTransactionInfoForMandiri();
+                mVeritransSDK.setTransactionRequest(transactionRequest);
+
+                //start transaction
+                performTransactionUsingMandiri();
+            }
+
+
         } else {
-            Toast.makeText(CoreFlowActivity.this, "Yet to implement.",  Toast.LENGTH_SHORT).show();
+            Toast.makeText(CoreFlowActivity.this, "Yet to implement.", Toast.LENGTH_SHORT).show();
             //performTransactionUsingCredit();
         }
 
@@ -147,33 +150,25 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
      */
     private void performTransactionUsingMandiri() {
 
-        if (transactionRequest != null && mVeritransSDK != null) {
+        //execute transaction
+        mVeritransSDK.paymentUsingMandiriBillPay(CoreFlowActivity.this, new
+                TransactionCallback() {
 
-            transactionRequest = addTransactionInfoForMandiri(transactionRequest, getAmount());
+                    @Override
+                    public void onSuccess(TransactionResponse transactionResponse) {
+                        Toast.makeText(CoreFlowActivity.this, "Transaction success:  " +
+                                transactionResponse.getStatusMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
-            //start transaction
-            mVeritransSDK.setTransactionRequest(transactionRequest);
+                    @Override
+                    public void onFailure(String errorMessage, TransactionResponse
+                            transactionResponse) {
 
-            //execute transaction
-            mVeritransSDK.paymentUsingMandiriBillPay(CoreFlowActivity.this, new
-                    TransactionCallback() {
+                        Toast.makeText(CoreFlowActivity.this, "Transaction failed: " + errorMessage,
+                                Toast.LENGTH_SHORT).show();
 
-                @Override
-                public void onSuccess(TransactionResponse transactionResponse) {
-                    Toast.makeText(CoreFlowActivity.this, "Transaction success:  " +
-                            transactionResponse.getStatusMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onFailure(String errorMessage, TransactionResponse
-                        transactionResponse) {
-
-                    Toast.makeText(CoreFlowActivity.this, "Transaction failed: " + errorMessage,
-                            Toast.LENGTH_SHORT).show();
-
-                }
-            });
-        }
+                    }
+                });
     }
 
 
@@ -183,7 +178,7 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
     private void performTransactionUsingCredit() {
 
         if (transactionRequest != null && mVeritransSDK != null) {
-            transactionRequest = addTransactionInfoForMandiri(transactionRequest, getAmount());
+            addTransactionInfoForMandiri();
             //start transaction
             mVeritransSDK.setTransactionRequest(transactionRequest);
         }
