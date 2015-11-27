@@ -122,8 +122,18 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
 
         } else {
-            Toast.makeText(CoreFlowActivity.this, "Yet to implement.", Toast.LENGTH_SHORT).show();
-            //performTransactionUsingCredit();
+            //Toast.makeText(CoreFlowActivity.this, "Yet to implement.", Toast.LENGTH_SHORT).show();
+
+            if (transactionRequest == null && mVeritransSDK != null) {
+
+                addTransactionInfoForMandiri();
+                mVeritransSDK.setTransactionRequest(transactionRequest);
+
+                //start transaction
+                performTransactionUsingCredit();
+            }
+
+
         }
 
     }
@@ -132,7 +142,7 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
     private int getAmount() {
 
         String amountData = amountEt.getText().toString();
-        int amount = 100;
+        int amount = 10000;
 
         if (amountData != null) {
             try {
@@ -174,14 +184,30 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * execute payment transaction using credit card method.
+     * for debug it is 08123456789
+     * msisdn must must less than 12
      */
     private void performTransactionUsingCredit() {
 
-        if (transactionRequest != null && mVeritransSDK != null) {
-            addTransactionInfoForMandiri();
-            //start transaction
-            mVeritransSDK.setTransactionRequest(transactionRequest);
-        }
+        //execute transaction
+        mVeritransSDK.paymentUsingIndosatDompetku(CoreFlowActivity.this, new
+                TransactionCallback() {
+
+                    @Override
+                    public void onSuccess(TransactionResponse transactionResponse) {
+                        Toast.makeText(CoreFlowActivity.this, "Transaction success:  " +
+                                transactionResponse.getStatusMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage, TransactionResponse
+                            transactionResponse) {
+
+                        Toast.makeText(CoreFlowActivity.this, "Transaction failed: " + errorMessage,
+                                Toast.LENGTH_SHORT).show();
+
+                    }
+                }, "08123456789");
     }
 
 }
