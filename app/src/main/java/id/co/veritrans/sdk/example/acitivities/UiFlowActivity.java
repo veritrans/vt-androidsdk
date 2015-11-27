@@ -25,6 +25,7 @@ import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.example.R;
+import id.co.veritrans.sdk.example.VeritransExampleApp;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
 import id.co.veritrans.sdk.models.BillInfoModel;
@@ -100,7 +101,11 @@ public class UiFlowActivity extends AppCompatActivity {
         Button deleteBt = (Button) findViewById(R.id.btn_delete_cards);
         unsecureRd = (RadioButton) findViewById(R.id.unseure_rd);
         secureRd = (RadioButton) findViewById(R.id.seure_rd);
-        initializeSdk();
+
+
+        mVeritransSDK = (VeritransSDK) ( (VeritransExampleApp) getApplication()).getVeritransSDK();
+
+
         initialiseAdapterData();
         deleteBt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,16 +284,7 @@ public class UiFlowActivity extends AppCompatActivity {
         return transactionRequest;
     }
 
-    private void initializeSdk() {
-        // sdk initialization process
-        VeritransBuilder veritransBuilder = new
-                VeritransBuilder(getApplicationContext(),
-                Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY);
-        veritransBuilder.enableLog(true);
 
-        mVeritransSDK = veritransBuilder.buildSDK();
-
-    }
 
     /**
      * initialize adapter data model by dummy values.
