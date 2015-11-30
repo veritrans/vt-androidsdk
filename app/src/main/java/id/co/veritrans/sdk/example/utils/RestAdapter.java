@@ -12,7 +12,7 @@ import java.sql.Date;
 import java.util.concurrent.TimeUnit;
 
 import id.co.veritrans.sdk.BuildConfig;
-import id.co.veritrans.sdk.example.model.ApiInterface;
+import id.co.veritrans.sdk.example.apicallinterfaces.ApiInterface;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 

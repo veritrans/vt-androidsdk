@@ -1,5 +1,6 @@
-package id.co.veritrans.sdk.example.model;
+package id.co.veritrans.sdk.example.apicallinterfaces;
 
+import id.co.veritrans.sdk.example.model.TransactionUpdateMerchantResponse;
 
 /**
  * Created by shivam on 10/29/15.

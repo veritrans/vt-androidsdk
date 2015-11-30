@@ -10,9 +10,12 @@ import java.util.UUID;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.VeritransSDK;
-import id.co.veritrans.sdk.example.model.ApiInterface;
+import id.co.veritrans.sdk.example.apicallinterfaces.ApiInterface;
+import id.co.veritrans.sdk.example.apicallinterfaces.RegisterTokenCallback;
+import id.co.veritrans.sdk.example.model.RegisterDeviceRequest;
+import id.co.veritrans.sdk.example.model.RegisterDeviceResponse;
 import id.co.veritrans.sdk.example.model.TransactionUpdateMerchantResponse;
-import id.co.veritrans.sdk.example.model.UpdateTransactionCallBack;
+import id.co.veritrans.sdk.example.apicallinterfaces.UpdateTransactionCallBack;
 import id.co.veritrans.sdk.example.model.TransactionMerchant;
 import id.co.veritrans.sdk.models.TransactionResponse;
 import id.co.veritrans.sdk.models.UserDetail;
@@ -29,6 +32,7 @@ public class Utils {
 
     private final static String TAG = Utils.class.getSimpleName();
     private static Subscription merchantSubscription = null;
+    private static Subscription registerSubscription = null;
     /**
      * It will return random 8 digit alpha numeric string.
      *
@@ -88,8 +92,6 @@ public class Utils {
                         transactionMerchant, updateTransactionCallBack);
 
             }
-
-        }else {
 
         }
     }
@@ -166,5 +168,77 @@ public class Utils {
         }
 
     }
+
+    public static void registerTokenMerchant(Context activity, RegisterDeviceRequest registerDeviceRequest,
+                                                 final RegisterTokenCallback callBack) {
+
+        final VeritransSDK veritransSDK = VeritransSDK.getVeritransSDK();
+
+        if (veritransSDK != null) {
+            ApiInterface apiInterface =
+                    RestAdapter.getMerchantApiClient(activity, false);
+            Observable<RegisterDeviceResponse> observable = null;
+            if (apiInterface != null) {
+                observable = apiInterface.registerDevice(registerDeviceRequest);
+                registerSubscription = observable.subscribeOn(Schedulers
+                        .io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<RegisterDeviceResponse>() {
+
+                            @Override
+                            public void onCompleted() {
+
+                                if (registerSubscription != null && !registerSubscription.isUnsubscribed()) {
+                                    registerSubscription.unsubscribe();
+                                }
+
+                            }
+
+                            @Override
+                            public void onError(Throwable throwable) {
+
+                                Logger.e("error while getting token : ", "" +
+                                        throwable.getMessage());
+                                callBack.onFailure(throwable.getMessage(), null);
+                            }
+
+                            @Override
+                            public void onNext(RegisterDeviceResponse registerDeviceResponse) {
+
+                                if (registerDeviceResponse != null) {
+
+                                    /*if (veritransSDK != null && veritransSDK.isLogEnabled()) {
+
+                                    }*/
+
+                                    if (registerDeviceResponse.getMessage().trim()
+                                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS)) {
+                                        callBack.onSuccess(registerDeviceResponse);
+                                    } else {
+                                        callBack.onFailure(registerDeviceResponse.getError(),
+                                                registerDeviceResponse);
+                                    }
+
+                                } else {
+                                    callBack.onFailure(id.co.veritrans.sdk.core.Constants.ERROR_EMPTY_RESPONSE, null);
+                                    Logger.e(id.co.veritrans.sdk.core.Constants.ERROR_EMPTY_RESPONSE);
+                                }
+
+                            }
+                        });
+
+            } else {
+                callBack.onFailure(id.co.veritrans.sdk.core.Constants.ERROR_UNABLE_TO_CONNECT, null);
+                Log.e(TAG, id.co.veritrans.sdk.core.Constants.ERROR_UNABLE_TO_CONNECT);
+
+            }
+
+        } else {
+            callBack.onFailure(id.co.veritrans.sdk.core.Constants.ERROR_SDK_IS_NOT_INITIALIZED, null);
+            Log.e(TAG, id.co.veritrans.sdk.core.Constants.ERROR_SDK_IS_NOT_INITIALIZED);
+        }
+
+    }
+
 
 }
