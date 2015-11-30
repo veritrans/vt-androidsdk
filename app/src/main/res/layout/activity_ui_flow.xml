@@ -141,12 +141,12 @@
         <CheckBox android:id="@+id/cb_indosat"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:enabled="false"
+                  android:enabled="true"
                   android:text="@string/indosat_dompetku"/>
         <CheckBox android:id="@+id/cb_manidri_ecash"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:enabled="false"
+                  android:checked="true"
                   android:text="@string/mandiri_e_cash"/>
 
         <CheckBox android:id="@+id/cb_indomaret"

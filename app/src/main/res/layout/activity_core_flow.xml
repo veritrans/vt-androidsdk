@@ -27,9 +27,18 @@
 
     <Button
         android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:id="@+id/btn_using_credit"
+        android:id="@+id/btn_using_indosat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/using_credit"/>
+        android:text="@string/using_indosat"/>
+
+
+    <Button
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:id="@+id/btn_using_indomaret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/using_indomaret"/>
+
 
 </LinearLayout>

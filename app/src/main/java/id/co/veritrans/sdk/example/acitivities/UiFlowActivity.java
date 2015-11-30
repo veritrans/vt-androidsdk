@@ -21,12 +21,10 @@ import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.SdkUtil;
 import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.TransactionRequest;
-import id.co.veritrans.sdk.core.VeritransBuilder;
 import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.VeritransExampleApp;
-import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
 import id.co.veritrans.sdk.models.BillInfoModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
@@ -158,7 +156,8 @@ public class UiFlowActivity extends AppCompatActivity {
                         }
                         if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
                                 .indosat_dompetku))) {
-                            paymentMethodsModel.setIsSelected(indosatCheckBox.isChecked());
+                            paymentMethodsModel.setIsSelected(true);
+
                         }
                         if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
                                 .mandiri_e_cash))) {

@@ -15,14 +15,15 @@ import id.co.veritrans.sdk.callbacks.PaymentStatusCallback;
 import id.co.veritrans.sdk.callbacks.TokenCallBack;
 import id.co.veritrans.sdk.callbacks.TransactionCallback;
 import id.co.veritrans.sdk.models.CIMBClickPayModel;
-import id.co.veritrans.sdk.models.CIMBClickPayRequestModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
 import id.co.veritrans.sdk.models.CardTransfer;
 import id.co.veritrans.sdk.models.EpayBriTransfer;
+import id.co.veritrans.sdk.models.IndomaretRequestModel;
 import id.co.veritrans.sdk.models.IndosatDompetkuRequest;
 import id.co.veritrans.sdk.models.MandiriBillPayTransferModel;
 import id.co.veritrans.sdk.models.MandiriClickPayModel;
 import id.co.veritrans.sdk.models.MandiriClickPayRequestModel;
+import id.co.veritrans.sdk.models.MandiriECashModel;
 import id.co.veritrans.sdk.models.PaymentMethodsModel;
 import id.co.veritrans.sdk.models.PermataBankTransfer;
 
@@ -320,8 +321,6 @@ public class VeritransSDK {
     public void paymentUsingCIMBClickPay(Activity activity, TransactionCallback
             paymentTransactionCallback) {
 
-
-
         if (transactionRequest != null && activity != null
                 && paymentTransactionCallback != null) {
 
@@ -341,7 +340,34 @@ public class VeritransSDK {
         }
     }
 
+    /**
+     * It will execute an transaction for Mandiri E Cash.
+     *
+     * @param activity
+     * @param paymentTransactionCallback TransactionCallback instance
+     */
 
+
+    public void paymentUsingMandiriECash(Activity activity, TransactionCallback
+            paymentTransactionCallback) {
+        if (transactionRequest != null && activity != null
+                && paymentTransactionCallback != null) {
+
+            transactionRequest.paymentMethod = Constants.PAYMENT_METHOD_MANDIRI_ECASH;
+            transactionRequest.activity = activity;
+
+            MandiriECashModel mandiriECashModel = SdkUtil.getMandiriECashModel(transactionRequest);
+
+            isRunning = true;
+
+            TransactionManager.paymentUsingMandiriECash(transactionRequest.getActivity(),
+                    mandiriECashModel,
+                    paymentTransactionCallback);
+        } else {
+            isRunning = false;
+            showError(transactionRequest, paymentTransactionCallback);
+        }
+    }
 
     public TransactionRequest getTransactionRequest() {
         return transactionRequest;
@@ -481,8 +507,39 @@ public class VeritransSDK {
     public void getPaymentStatus(Activity activity,String transactionId,PaymentStatusCallback
             paymentStatusCallback){
         if(TextUtils.isEmpty(transactionId)){
-            TransactionManager.getPaymentStatus(activity,transactionId,paymentStatusCallback);
+            TransactionManager.getPaymentStatus(activity, transactionId, paymentStatusCallback);
         }
     }
+
+
+    /**
+     * It will execute an transaction for Indomaret .
+     *
+     * @param activity instance of an activity.
+     * @param indomaretCallback instance of TransactionCallback.
+     */
+    public void paymentUsingIndomaret(Activity activity,
+                                            TransactionCallback indomaretCallback, IndomaretRequestModel.CstoreEntity cstoreEntity) {
+
+
+        if (transactionRequest != null && activity != null
+                && indomaretCallback != null && cstoreEntity != null) {
+
+            transactionRequest.paymentMethod = Constants.PAYMENT_METHOD_INDOSAT_DOMPETKU;
+            transactionRequest.activity = activity;
+
+            IndomaretRequestModel indomaretRequestModel =
+                    SdkUtil.getIndomaretRequestModel(transactionRequest, cstoreEntity);
+
+            isRunning = true;
+            TransactionManager.paymentUsingIndomaret(transactionRequest.getActivity(),
+                    indomaretRequestModel,
+                    indomaretCallback);
+        } else {
+            isRunning = false;
+            showError(transactionRequest, indomaretCallback);
+        }
+    }
+
 
 }
