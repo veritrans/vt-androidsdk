@@ -17,6 +17,7 @@ import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.VeritransExampleApp;
 import id.co.veritrans.sdk.example.utils.Utils;
 import id.co.veritrans.sdk.models.BillInfoModel;
+import id.co.veritrans.sdk.models.IndomaretRequestModel;
 import id.co.veritrans.sdk.models.ItemDetails;
 import id.co.veritrans.sdk.models.TransactionResponse;
 
@@ -47,10 +48,12 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
         amountEt = (EditText) findViewById(R.id.et_amount);
         Button mandiri = (Button) findViewById(R.id.btn_using_mandiri);
-        Button credit = (Button) findViewById(R.id.btn_using_credit);
+        Button indosat = (Button) findViewById(R.id.btn_using_indosat);
+        Button indomaret = (Button) findViewById(R.id.btn_using_indomaret);
 
         mandiri.setOnClickListener(this);
-        credit.setOnClickListener(this);
+        indosat.setOnClickListener(this);
+        indomaret.setOnClickListener(this);
 
         if (BuildConfig.DEBUG) {
             amountEt.setText("100");
@@ -118,11 +121,13 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
                 //start transaction
                 performTransactionUsingMandiri();
+            }else{
+                Toast.makeText(CoreFlowActivity.this, "in else part of mandiri bill pay request", Toast
+                        .LENGTH_SHORT).show();
             }
 
 
-        } else {
-            //Toast.makeText(CoreFlowActivity.this, "Yet to implement.", Toast.LENGTH_SHORT).show();
+        } else if(R.id.btn_using_indosat ==view.getId()){
 
             if (transactionRequest == null && mVeritransSDK != null) {
 
@@ -130,10 +135,24 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
                 mVeritransSDK.setTransactionRequest(transactionRequest);
 
                 //start transaction
-                performTransactionUsingCredit();
+                performTransactionUsingIndosat();
+            }else{
+                Toast.makeText(CoreFlowActivity.this, "in else part of indosat request", Toast
+                        .LENGTH_SHORT).show();
             }
+        } else {
 
+            if (transactionRequest == null && mVeritransSDK != null) {
 
+                addTransactionInfoForMandiri();
+                mVeritransSDK.setTransactionRequest(transactionRequest);
+
+                //start transaction
+                performTransactionUsingIndomaret();
+            }else{
+                Toast.makeText(CoreFlowActivity.this, "in else part of indomaret request", Toast
+                        .LENGTH_SHORT).show();
+            }
         }
 
     }
@@ -156,7 +175,7 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
 
     /**
-     * execute mandiri bill payment transaction.
+     * Execute mandiri bill payment transaction.
      */
     private void performTransactionUsingMandiri() {
 
@@ -183,13 +202,13 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
 
     /**
-     * execute payment transaction using credit card method.
+     * Execute payment transaction using credit card method.
      * for debug it is 08123456789
      * msisdn must must less than 12
      */
-    private void performTransactionUsingCredit() {
+    private void performTransactionUsingIndosat() {
 
-        //execute transaction
+        //Execute transaction
         mVeritransSDK.paymentUsingIndosatDompetku(CoreFlowActivity.this, new
                 TransactionCallback() {
 
@@ -208,6 +227,40 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
                     }
                 }, "08123456789");
+    }
+
+
+
+    /**
+     * Execute payment transaction using  indomaret method.
+     *
+     */
+    private void performTransactionUsingIndomaret() {
+
+
+        IndomaretRequestModel.CstoreEntity cstoreEntity = new IndomaretRequestModel.CstoreEntity();
+        cstoreEntity.setMessage("demo_message");
+        cstoreEntity.setStore("indomaret");
+
+        //Execute transaction
+        mVeritransSDK.paymentUsingIndomaret(CoreFlowActivity.this, new
+                TransactionCallback() {
+
+                    @Override
+                    public void onSuccess(TransactionResponse transactionResponse) {
+                        Toast.makeText(CoreFlowActivity.this, "Transaction success:  " +
+                                transactionResponse.getStatusMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage, TransactionResponse
+                            transactionResponse) {
+
+                        Toast.makeText(CoreFlowActivity.this, "Transaction failed: " + errorMessage,
+                                Toast.LENGTH_SHORT).show();
+
+                    }
+                }, cstoreEntity);
     }
 
 }

@@ -27,5 +27,7 @@
     <string name="ui_flow">Payment Using Ui</string>
     <string name="using_mandiri">Payment Using Mandiri</string>
     <string name="using_credit">Payment Using Credit</string>
+    <string name="using_indosat">Payment Using Indosat</string>
+    <string name="using_indomaret">Payment Using Indomaret</string>
 
 </resources>
