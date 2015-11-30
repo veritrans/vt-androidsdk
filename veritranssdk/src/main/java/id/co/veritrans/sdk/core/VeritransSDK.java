@@ -23,6 +23,7 @@ import id.co.veritrans.sdk.models.IndosatDompetkuRequest;
 import id.co.veritrans.sdk.models.MandiriBillPayTransferModel;
 import id.co.veritrans.sdk.models.MandiriClickPayModel;
 import id.co.veritrans.sdk.models.MandiriClickPayRequestModel;
+import id.co.veritrans.sdk.models.MandiriECashModel;
 import id.co.veritrans.sdk.models.PaymentMethodsModel;
 import id.co.veritrans.sdk.models.PermataBankTransfer;
 
@@ -320,8 +321,6 @@ public class VeritransSDK {
     public void paymentUsingCIMBClickPay(Activity activity, TransactionCallback
             paymentTransactionCallback) {
 
-
-
         if (transactionRequest != null && activity != null
                 && paymentTransactionCallback != null) {
 
@@ -341,7 +340,34 @@ public class VeritransSDK {
         }
     }
 
+    /**
+     * It will execute an transaction for Mandiri E Cash.
+     *
+     * @param activity
+     * @param paymentTransactionCallback TransactionCallback instance
+     */
 
+
+    public void paymentUsingMandiriECash(Activity activity, TransactionCallback
+            paymentTransactionCallback) {
+        if (transactionRequest != null && activity != null
+                && paymentTransactionCallback != null) {
+
+            transactionRequest.paymentMethod = Constants.PAYMENT_METHOD_MANDIRI_ECASH;
+            transactionRequest.activity = activity;
+
+            MandiriECashModel mandiriECashModel = SdkUtil.getMandiriECashModel(transactionRequest);
+
+            isRunning = true;
+
+            TransactionManager.paymentUsingMandiriECash(transactionRequest.getActivity(),
+                    mandiriECashModel,
+                    paymentTransactionCallback);
+        } else {
+            isRunning = false;
+            showError(transactionRequest, paymentTransactionCallback);
+        }
+    }
 
     public TransactionRequest getTransactionRequest() {
         return transactionRequest;
