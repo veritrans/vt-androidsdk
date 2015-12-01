@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-
+apply plugin: 'com.google.gms.google-services'
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
@@ -28,7 +28,9 @@ android {
     }
 
     signingConfigs {
-
+        debug {
+            storeFile file('certificates/debug.keystore')
+        }
         release{
             storeFile file('certificates/veritrans_demo_app.jks')
             storePassword 'veritrans123'
@@ -61,6 +63,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':veritranssdk')
     compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.google.android.gms:play-services-gcm:8.3.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
         transitive = true;
     }

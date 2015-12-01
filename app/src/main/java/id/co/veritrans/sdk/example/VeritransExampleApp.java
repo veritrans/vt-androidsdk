@@ -43,4 +43,6 @@ public class VeritransExampleApp extends Application {
     public VeritransSDK getVeritransSDK() {
         return mVeritransSDK;
     }
+
+
 }
