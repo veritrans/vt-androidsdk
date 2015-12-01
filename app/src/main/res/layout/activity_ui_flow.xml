@@ -141,7 +141,7 @@
         <CheckBox android:id="@+id/cb_indosat"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:enabled="true"
+                  android:checked="true"
                   android:text="@string/indosat_dompetku"/>
         <CheckBox android:id="@+id/cb_manidri_ecash"
                   android:layout_width="match_parent"
