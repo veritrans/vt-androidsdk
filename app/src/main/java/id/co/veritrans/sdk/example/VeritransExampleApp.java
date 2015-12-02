@@ -54,8 +54,7 @@ public class VeritransExampleApp extends Application {
     private void initializeSdk() {
         // sdk initialization process
         VeritransBuilder veritransBuilder = new
-                VeritransBuilder(getApplicationContext(),
-                Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY);
+                VeritransBuilder(getApplicationContext(), Constants.VT_CLIENT_KEY);
         veritransBuilder.enableLog(true);
         mVeritransSDK = veritransBuilder.buildSDK();
     }

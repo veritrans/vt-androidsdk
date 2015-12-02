@@ -94,6 +94,7 @@ public class VeritransGcmListenerService extends GcmListenerService {
                 transactionId, orderId,  grossAmount,  paymentType,transactionTime,  transactionStatus);
         Intent intent = new Intent(this, NotificationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constants.PAYMENT_STATUS,transactionResponse);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -109,7 +110,7 @@ public class VeritransGcmListenerService extends GcmListenerService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        int randomPIN = (int)(Math.random()*9000)+1000;
+        notificationManager.notify(randomPIN, notificationBuilder.build());
     }
 }
