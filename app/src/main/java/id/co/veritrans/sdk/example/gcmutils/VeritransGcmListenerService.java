@@ -27,13 +27,16 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import id.co.veritrans.sdk.activities.NotificationActivity;
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.example.R;
-import id.co.veritrans.sdk.example.acitivities.MainActivity;
+import id.co.veritrans.sdk.example.utils.Constants;
+import id.co.veritrans.sdk.models.TransactionResponse;
 
 public class VeritransGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "VeritransGcmListenerService";
+
 
     /**
      * Called when message is received.
@@ -45,15 +48,16 @@ public class VeritransGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("message");
+        //String message = data.getString("message");
+        //Logger.d(TAG,"data:"+data);
         Logger.d(TAG, "From: " + from);
-        Logger.d(TAG, "Message: " + message);
+        //Logger.d(TAG, "Message: " + message);
 
-        if (from.startsWith("/topics/")) {
+     /*   if (from.startsWith("/topics/")) {
             // message received from some topic.
         } else {
             // normal downstream message.
-        }
+        }*/
 
         // [START_EXCLUDE]
         /**
@@ -67,7 +71,7 @@ public class VeritransGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        sendNotification(message);
+        sendNotification(data);
         // [END_EXCLUDE]
     }
     // [END receive_message]
@@ -75,19 +79,30 @@ public class VeritransGcmListenerService extends GcmListenerService {
     /**
      * Create and show a simple notification containing the received GCM message.
      *
-     * @param message GCM message received.
+     * @param data GCM message received.
      */
-    private void sendNotification(String message) {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void sendNotification(Bundle data) {
+        String statusCode = data.getString(Constants.KEY_STATUS_CODE,"");
+        String statusMessage = data.getString(Constants.KEY_STATUS_MESSAGE,"");
+        String transactionId = data.getString(Constants.KEY_TRANSACTION_ID,"");
+        String orderId = data.getString(Constants.KEY_ORDER_ID,"");
+        String grossAmount = data.getString(Constants.KEY_GROSS_AMOUNT,"");
+        String paymentType = data.getString(Constants.KEY_PAYMENT_TYPE,"");
+        String transactionTime = data.getString(Constants.KEY_TRANSACTION_TIME,"");
+        String transactionStatus = data.getString(Constants.KEY_TRANSACTION_STATUS,"");
+        TransactionResponse transactionResponse = new TransactionResponse( statusCode,  statusMessage,
+                transactionId, orderId,  grossAmount,  paymentType,transactionTime,  transactionStatus);
+        Intent intent = new Intent(this, NotificationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(Constants.PAYMENT_STATUS,transactionResponse);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.common_ic_googleplayservices)
-                .setContentTitle("GCM Message")
-                .setContentText(message)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(statusMessage)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);

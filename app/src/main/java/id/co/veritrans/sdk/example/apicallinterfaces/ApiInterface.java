@@ -17,7 +17,7 @@ public interface ApiInterface {
             @Body TransactionMerchant transactionMerchant);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST("/registerdevice/")
+    @POST("/register/")
     Observable<RegisterDeviceResponse> registerDevice(
             @Body RegisterDeviceRequest registerDeviceRequest);
 }

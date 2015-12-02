@@ -29,12 +29,14 @@ import com.google.android.gms.iid.InstanceID;
 import java.io.IOException;
 
 import id.co.veritrans.sdk.core.Logger;
+import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.apicallinterfaces.RegisterTokenCallback;
 import id.co.veritrans.sdk.example.model.RegisterDeviceRequest;
 import id.co.veritrans.sdk.example.model.RegisterDeviceResponse;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
+import id.co.veritrans.sdk.models.UserDetail;
 
 public class RegistrationIntentService extends IntentService {
 
@@ -102,7 +104,15 @@ public class RegistrationIntentService extends IntentService {
         Utils.registerTokenMerchant(getApplicationContext(), registerDeviceRequest, new RegisterTokenCallback() {
             @Override
             public void onSuccess(RegisterDeviceResponse registerDeviceResponse) {
-                Logger.i("Registered token to merchant");
+                Logger.i("Registered token to merchant"+registerDeviceResponse.getToken());
+                StorageDataHandler storageDataHandler = new StorageDataHandler();
+                UserDetail userDetail = new UserDetail();
+                userDetail.setMerchantToken(registerDeviceResponse.getToken());
+                try {
+                    storageDataHandler.writeObject(getApplicationContext(), id.co.veritrans.sdk.core.Constants.USER_DETAILS, userDetail);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
