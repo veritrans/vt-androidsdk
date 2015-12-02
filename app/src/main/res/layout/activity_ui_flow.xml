@@ -152,7 +152,7 @@
         <CheckBox android:id="@+id/cb_indomaret"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:enabled="false"
+                  android:checked="true"
                   android:text="@string/indomaret"/>
 
 
