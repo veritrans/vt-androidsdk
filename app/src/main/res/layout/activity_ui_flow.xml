@@ -137,7 +137,7 @@
         <CheckBox android:id="@+id/cb_bbm_money"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:enabled="false"
+                  android:checked="true"
                   android:text="@string/bbm_money"/>
         <CheckBox android:id="@+id/cb_indosat"
                   android:layout_width="match_parent"
