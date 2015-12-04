@@ -93,8 +93,8 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
 
         //to  perform transaction using mandiri bill payment.
         transactionRequest =
-                new TransactionRequest(Utils.generateOrderId(), CoreFlowActivity.this, getAmount(),
-                        id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
+                new TransactionRequest( CoreFlowActivity.this, Utils.generateOrderId(),  getAmount());
+
 
         // item details
         ItemDetails itemDetails = new ItemDetails("1", getAmount(), 1, "pen");
