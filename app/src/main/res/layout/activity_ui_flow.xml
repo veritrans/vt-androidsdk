@@ -121,7 +121,8 @@
         <CheckBox android:id="@+id/cb_mandiri_clickpay"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:enabled="false"
+                  android:enabled="true"
+                  android:checked="true"
                   android:text="@string/mandiri_click_pay"/>
         <CheckBox android:id="@+id/cb_cimb_clickpay"
                   android:layout_width="match_parent"
