@@ -189,8 +189,7 @@ public class UiFlowActivity extends AppCompatActivity {
                 }
 
                 transactionRequest =
-                        new TransactionRequest(Utils.generateOrderId(), UiFlowActivity.this, amount,
-                                id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
+                        new TransactionRequest( UiFlowActivity.this , Utils.generateOrderId(), amount);
 
 
                 if (transactionRequest != null && mVeritransSDK != null) {
