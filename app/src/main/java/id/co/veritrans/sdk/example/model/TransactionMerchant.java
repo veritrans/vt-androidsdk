@@ -1,4 +1,4 @@
-package id.co.veritrans.sdk.models;
+package id.co.veritrans.sdk.example.model;
 
 /**
  * Created by chetan on 20/11/15.
@@ -13,7 +13,8 @@ public class TransactionMerchant {
     private String transactionStatus;
 
     public TransactionMerchant(String orderId, String transactionId, String grossAmount,
-                               String paymentType, String userEmail, String transactionTime,String transactionStatus) {
+                               String paymentType, String userEmail, String transactionTime,
+                               String transactionStatus) {
         this.orderId = orderId;
         this.transactionId = transactionId;
         this.grossAmount = grossAmount;
