@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,6 @@ import id.co.veritrans.sdk.models.TransactionResponse;
 /**
  * this is an example application,
  * created to show how developers can use veritrans sdk to perform transaction.
- *
  */
 public class UiFlowActivity extends AppCompatActivity {
 
@@ -67,12 +67,10 @@ public class UiFlowActivity extends AppCompatActivity {
 
     private ArrayList<PaymentMethodsModel> selectedPaymentMethods = new ArrayList<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
-
 
         setContentView(R.layout.activity_ui_flow);
         creditCardCheckBox = (CheckBox) findViewById(R.id.cb_credit_card);
@@ -92,7 +90,6 @@ public class UiFlowActivity extends AppCompatActivity {
             amountEt.setText("100");
         }
 
-
         storageDataHandler = new StorageDataHandler();
 
         clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
@@ -102,9 +99,7 @@ public class UiFlowActivity extends AppCompatActivity {
         unsecureRd = (RadioButton) findViewById(R.id.unseure_rd);
         secureRd = (RadioButton) findViewById(R.id.seure_rd);
 
-
-        mVeritransSDK = (VeritransSDK) ( (VeritransExampleApp) getApplication()).getVeritransSDK();
-
+        mVeritransSDK = (VeritransSDK) ((VeritransExampleApp) getApplication()).getVeritransSDK();
 
         initialiseAdapterData();
         deleteBt.setOnClickListener(new View.OnClickListener() {
@@ -171,14 +166,13 @@ public class UiFlowActivity extends AppCompatActivity {
                         }
                         if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
                                 .offers))) {
-                            paymentMethodsModel.setIsSelected(true);
+                            paymentMethodsModel.setIsSelected(false);
                         }
                     }
                 }
                 if (mVeritransSDK != null) {
                     mVeritransSDK.setSelectedPaymentMethods(selectedPaymentMethods);
                 }
-
 
                 String amountData = amountEt.getText().toString();
                 int amount = 100;
@@ -191,8 +185,7 @@ public class UiFlowActivity extends AppCompatActivity {
                 }
 
                 transactionRequest =
-                        new TransactionRequest( UiFlowActivity.this , Utils.generateOrderId(), amount);
-
+                        new TransactionRequest(UiFlowActivity.this, Utils.generateOrderId(), amount);
 
                 if (transactionRequest != null && mVeritransSDK != null) {
 
@@ -232,7 +225,6 @@ public class UiFlowActivity extends AppCompatActivity {
 
             }
         });
-
 
         clickradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -288,8 +280,6 @@ public class UiFlowActivity extends AppCompatActivity {
         return transactionRequest;
     }
 
-
-
     /**
      * initialize adapter data model by dummy values.
      */
@@ -327,7 +317,6 @@ public class UiFlowActivity extends AppCompatActivity {
         return paymentImageList;
     }
 
-
     /**
      * onReceive will get called when transaction gets completed.
      */
@@ -348,8 +337,13 @@ public class UiFlowActivity extends AppCompatActivity {
                 Log.d(TAG, "transaction error message " + errorMessage);
 
                 if (transactionResponse != null) {
-                    SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse
-                            .getStatusMessage());
+                    if (transactionResponse.getTransactionStatus().equalsIgnoreCase
+                            (id.co.veritrans.sdk.core.Constants.PENDING)) {
+                        SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_pending));
+                    } else if (!TextUtils.isEmpty(transactionResponse.getStatusMessage())) {
+                        SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse
+                                .getStatusMessage());
+                    }
                     Log.d(TAG, "transaction message " + transactionResponse.getStatusMessage());
                     // update Merchant Server;
                     Utils.updateMerchantServer(UiFlowActivity.this, transactionResponse);
@@ -361,7 +355,6 @@ public class UiFlowActivity extends AppCompatActivity {
 
         }
     };
-
 
     @Override
     protected void onResume() {

@@ -29,5 +29,6 @@
     <string name="using_credit">Payment Using Credit</string>
     <string name="using_indosat">Payment Using Indosat</string>
     <string name="using_indomaret">Payment Using Indomaret</string>
+    <string name="transaction_pending">Transaction pending</string>
 
 </resources>
