@@ -34,4 +34,13 @@ public class Constants {
     public static final String BASE_URL_MERCHANT_FOR_RELEASE = "https://hangout.betas.in/veritrans/api/";
 
 
+
+    public static final String CHECK_STATUS = "https://hangout.betas" +
+            ".in/veritrans/api/paymentstatus";
+    public static final String BEFORE_PAYMENT_ERROR = "https://hangout.betas" +
+            ".in/veritrans/api/unfinish";
+    public static final String USER_CANCEL = "https://hangout.betas" +
+            ".in/veritrans/api/error";
+
+
 }
