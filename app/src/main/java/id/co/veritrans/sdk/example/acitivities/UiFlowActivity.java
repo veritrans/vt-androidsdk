@@ -25,7 +25,9 @@ import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.example.BuildConfig;
 import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.VeritransExampleApp;
+import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
+import id.co.veritrans.sdk.models.BBMCallBackUrl;
 import id.co.veritrans.sdk.models.BillInfoModel;
 import id.co.veritrans.sdk.models.CardTokenRequest;
 import id.co.veritrans.sdk.models.ItemDetails;
@@ -195,9 +197,13 @@ public class UiFlowActivity extends AppCompatActivity {
                 if (transactionRequest != null && mVeritransSDK != null) {
 
                     transactionRequest = addTransactionInfo(transactionRequest, amount);
+
+                    BBMCallBackUrl bbmCallBackUrl = new BBMCallBackUrl(Constants.CHECK_STATUS,
+                            Constants.BEFORE_PAYMENT_ERROR, Constants.USER_CANCEL);
+
                     //start transaction
                     mVeritransSDK.setTransactionRequest(transactionRequest);
-
+                    mVeritransSDK.setBBMCallBackUrl(bbmCallBackUrl);
                     // for ui
                     mVeritransSDK.startPaymentUiFlow();
 
