@@ -209,7 +209,7 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
     private void performTransactionUsingIndosat() {
 
         //Execute transaction
-        mVeritransSDK.paymentUsingIndosatDompetku(CoreFlowActivity.this, new
+        mVeritransSDK.paymentUsingIndosatDompetku(CoreFlowActivity.this , "08123456789", new
                 TransactionCallback() {
 
                     @Override
@@ -226,7 +226,7 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
                                 Toast.LENGTH_SHORT).show();
 
                     }
-                }, "08123456789");
+                });
     }
 
 
@@ -243,7 +243,7 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
         cstoreEntity.setStore("indomaret");
 
         //Execute transaction
-        mVeritransSDK.paymentUsingIndomaret(CoreFlowActivity.this, new
+        mVeritransSDK.paymentUsingIndomaret(CoreFlowActivity.this, cstoreEntity, new
                 TransactionCallback() {
 
                     @Override
@@ -260,7 +260,7 @@ public class CoreFlowActivity extends AppCompatActivity implements View.OnClickL
                                 Toast.LENGTH_SHORT).show();
 
                     }
-                }, cstoreEntity);
+                });
     }
 
 }
