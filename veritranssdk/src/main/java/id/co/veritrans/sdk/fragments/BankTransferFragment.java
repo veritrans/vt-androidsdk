@@ -9,20 +9,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.io.IOException;
+
 import id.co.veritrans.sdk.R;
 import id.co.veritrans.sdk.activities.BankTransferInstructionActivity;
 import id.co.veritrans.sdk.core.Constants;
+import id.co.veritrans.sdk.core.StorageDataHandler;
 import id.co.veritrans.sdk.core.VeritransSDK;
+import id.co.veritrans.sdk.models.UserDetail;
 import id.co.veritrans.sdk.widgets.TextViewFont;
 
 /**
+ * It displays payment related instructions on the screen.
  * Created by shivam on 10/27/15.
  */
 public class BankTransferFragment extends Fragment {
 
     private TextViewFont mTextViewSeeInstruction = null;
     private EditText mEditTextEmailId = null;
-
+    private StorageDataHandler storageDataHandler;
+    private UserDetail userDetail;
 
     @Nullable
     @Override
@@ -30,22 +36,38 @@ public class BankTransferFragment extends Fragment {
             savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_bank_transfer, container, false);
-
-        initializeViews(view);
-
         return view;
     }
 
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        initializeViews(view);
+    }
+
+    /**
+     * initializes view and adds click listener for it.
+     *
+     * @param view
+     */
     private void initializeViews(View view) {
 
         mTextViewSeeInstruction = (TextViewFont)
                 view.findViewById(R.id.text_see_instruction);
-
+        storageDataHandler = new StorageDataHandler();
+        try {
+            userDetail = (UserDetail) storageDataHandler.readObject(getActivity(),
+                    Constants.USER_DETAILS);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         mEditTextEmailId = (EditText) view.findViewById(R.id.et_email);
         VeritransSDK veritransSDK = VeritransSDK.getVeritransSDK();
         try {
-            mEditTextEmailId.setText(veritransSDK.getTransactionRequest().getCustomerDetails().getEmail());
-        }catch (NullPointerException e ){
+            mEditTextEmailId.setText(userDetail.getEmail());
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
         mTextViewSeeInstruction.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +86,13 @@ public class BankTransferFragment extends Fragment {
         });
     }
 
+
+    /**
+     * created to give access to email id field from {@link id.co.veritrans.sdk.activities
+     * .BankTransferActivity}.
+     *
+     * @return
+     */
     public String getEmailId() {
         if (mEditTextEmailId != null) {
             return mEditTextEmailId.getText().toString();

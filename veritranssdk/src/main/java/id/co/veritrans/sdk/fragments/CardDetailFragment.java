@@ -2,6 +2,7 @@ package id.co.veritrans.sdk.fragments;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -65,25 +66,30 @@ public class CardDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         veritransSDK = VeritransSDK.getVeritransSDK();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
         if (getArguments() != null) {
             cardDetail = (CardTokenRequest) getArguments().getSerializable(ARG_PARAM);
         }
         cardDetail.setGrossAmount(veritransSDK.getTransactionRequest().getAmount());
         Logger.i("cardDetail:" + cardDetail.getString());
+    }
 
-        /*((CreditDebitCardFlowActivity) getActivity()).getSupportActionBar().setTitle(getString(R
-                .string.card_details));
-        ((CreditDebitCardFlowActivity) getActivity()).getSupportActionBar()
-                .setDisplayHomeAsUpEnabled(true);*/
-        View view = inflater.inflate(R.layout.fragment_card_detail, container, false);
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SdkUtil.hideKeyboard(getActivity());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_card_detail, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         initialiseViews(view);
-
-        return view;
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private void initialiseViews(View view) {
@@ -209,6 +215,7 @@ public class CardDetailFragment extends Fragment {
         deleteIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Logger.i("Card to delete:" + cardDetail.getCardNumber());
                 VeritransDialog veritransDialog = new VeritransDialog(getActivity(),getString(R.string.delete)
                         ,getString(R.string.card_delete_message),getString(android.R.string.yes),
                         getString(android.R.string.no));
@@ -216,6 +223,7 @@ public class CardDetailFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if(parentFragment!=null && parentFragment instanceof SavedCardFragment) {
+
                             ((SavedCardFragment) parentFragment).deleteCreditCard(cardDetail.getCardNumber());
                         }
                     }
@@ -231,12 +239,14 @@ public class CardDetailFragment extends Fragment {
                 VeritransDialog veritransDialog = new VeritransDialog(getActivity(), getResources().getDrawable(R.drawable.cvv_dialog_image,null),
                         getString(R.string.message_cvv), getString(R.string.got_it), "");
                 veritransDialog.show();
+                SdkUtil.hideKeyboard(getActivity()); // hide keyboard if visible.
             }
         });
 
     }
 
     private void cardTransactionProcess(String cvv) {
+        Logger.i("Card to delete:"+cardDetail.getCardNumber());
         try {
             cardDetail.setCardCVV(Integer.parseInt(cvv));
         } catch (NumberFormatException e) {
@@ -284,12 +294,14 @@ public class CardDetailFragment extends Fragment {
         FlipAnimation flipAnimation = new FlipAnimation(cardContainerFront, cardContainerBack);
         flipAnimation.setStartOffset(100);
         flipAnimation.setDuration(200);
-        SdkUtil.hideKeyboard(getActivity());
         if (cardContainerFront.getVisibility() == View.GONE) {
             flipAnimation.reverse();
-            //SdkUtil.hideKeyboard(getActivity());
+            /*if(cvvEt!=null) {
+                SdkUtil.showKeyboard(getActivity(), cvvEt);
+            }*/
+            SdkUtil.hideKeyboard(getActivity());
         } else {
-
+            //SdkUtil.showKeyboard(getActivity(),cvvEt);
         }
         flipAnimation.setAnimationListener(new Animation.AnimationListener() {
                                                @Override
@@ -299,12 +311,25 @@ public class CardDetailFragment extends Fragment {
 
                                                @Override
                                                public void onAnimationEnd(Animation animation) {
-                                                   if (cardContainerFront.getVisibility() == View
+                                                   /*if (cardContainerFront.getVisibility() == View
                                                            .VISIBLE) {
                                                        SdkUtil.hideKeyboard(getActivity());
                                                    } else {
                                                        SdkUtil.showKeyboard(getActivity(), cvvEt);
-                                                   }
+                                                   }*/
+                                                   Handler handler = new Handler();
+                                                   handler.postDelayed(new Runnable() {
+                                                       @Override
+                                                       public void run() {
+                                                           if (cardContainerFront.getVisibility() == View
+                                                                   .VISIBLE) {
+
+                                                               SdkUtil.hideKeyboard(getActivity());
+                                                           } else {
+                                                               SdkUtil.showKeyboard(getActivity(), cvvEt);
+                                                           }
+                                                       }
+                                                   },50);
                                                }
 
                                                @Override

@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import id.co.veritrans.sdk.R;
 import id.co.veritrans.sdk.activities.CreditDebitCardFlowActivity;
 import id.co.veritrans.sdk.adapters.CardPagerAdapter;
+import id.co.veritrans.sdk.callbacks.DeleteCardCallback;
 import id.co.veritrans.sdk.core.Constants;
 import id.co.veritrans.sdk.core.Logger;
+import id.co.veritrans.sdk.core.SdkUtil;
 import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.models.CardTokenRequest;
+import id.co.veritrans.sdk.models.DeleteCardResponse;
 import id.co.veritrans.sdk.widgets.CirclePageIndicator;
 import id.co.veritrans.sdk.widgets.TextViewFont;
 
@@ -49,29 +52,30 @@ public class SavedCardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_saved_card, container, false);
+        return inflater.inflate(R.layout.fragment_saved_card, container, false);
+    }
 
-        emptyCardsTextViewFont = (TextViewFont) view.findViewById(R.id.text_empty_saved_cards);
-
-
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         bindViews(view);
-        return view;
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        try {
+        /*try {
             ((CreditDebitCardFlowActivity) getActivity()).getSupportActionBar().setTitle(getString(R
                     .string.saved_card));
             ((CreditDebitCardFlowActivity) getActivity()).getSupportActionBar()
                     .setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException e){
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void bindViews(View view) {
+        emptyCardsTextViewFont = (TextViewFont) view.findViewById(R.id.text_empty_saved_cards);
         savedCardPager = (ViewPager) view.findViewById(R.id.saved_card_pager);
         addCardBt = (FloatingActionButton) view.findViewById(R.id.btn_add_card);
         addCardBt.setOnClickListener(new View.OnClickListener() {
@@ -90,8 +94,12 @@ public class SavedCardFragment extends Fragment {
                 .LayoutParams.MATCH_PARENT, (int) cardHeight);
         savedCardPager.setLayoutParams(parms);
         circlePageIndicator = (CirclePageIndicator) view.findViewById(R.id.indicator);
-        creditCards = ((CreditDebitCardFlowActivity) getActivity()).getCreditCards();
+        creditCards = ((CreditDebitCardFlowActivity) getActivity()).getCreditCardList();
+        setViewPagerValues();
 
+    }
+
+    private void setViewPagerValues() {
         if (creditCards != null) {
              cardPagerAdapter = new CardPagerAdapter(this,getChildFragmentManager(),
                     creditCards);
@@ -113,10 +121,9 @@ public class SavedCardFragment extends Fragment {
                 }
             });
             circlePageIndicator.setViewPager(savedCardPager);
+            ((CreditDebitCardFlowActivity)getActivity()).setAdapterViews(cardPagerAdapter,circlePageIndicator,emptyCardsTextViewFont);
             showHideNoCardMessage();
         }
-
-
     }
 
     private void showHideNoCardMessage() {
@@ -130,23 +137,87 @@ public class SavedCardFragment extends Fragment {
     }
 
     public void deleteCreditCard(String cardNumber) {
+            showHideNoCardMessage();
+            deleteCards(cardNumber);
 
-        if(creditCards!=null && !creditCards.isEmpty()){
-            int position  = -1;
-            for(int i =0; i < creditCards.size();i++){
-                if(creditCards.get(i).getCardNumber().equalsIgnoreCase(cardNumber)){
-                    position = i;
+    }
+
+    public void deleteCards(final String cardNumber) {
+        CardTokenRequest creditCard = null;
+        Logger.i("cardNumber:"+cardNumber);
+        if (creditCards != null && !creditCards.isEmpty()) {
+
+            for (int i = 0; i < creditCards.size(); i++) {
+                if (creditCards.get(i).getCardNumber().equalsIgnoreCase(cardNumber)) {
+                    creditCard = creditCards.get(i);
                 }
             }
-            Logger.i("position to delete:"+position+",creditCard size:"+creditCards.size());
-            if(position >= 0){
-                creditCards.remove(position);
-                Logger.i("creditCard size:" + creditCards.size());
+            try {
+                Logger.i("position to delete:" + creditCard.getCardNumber() + ",creditCard size:" + creditCards.size());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             }
-            cardPagerAdapter.notifyDataSetChanged();
-            circlePageIndicator.notifyDataSetChanged();
-            showHideNoCardMessage();
-            ((CreditDebitCardFlowActivity)getActivity()).saveCreditCards();
+        }
+        if (creditCard != null) {
+            veritransSDK.deleteCard(getActivity(), creditCard, new DeleteCardCallback() {
+                @Override
+                public void onFailure(String errorMessage) {
+                    SdkUtil.showSnackbar(getActivity(),errorMessage);
+                }
+
+                @Override
+                public void onSuccess(DeleteCardResponse deleteResponse) {
+                    if (deleteResponse == null || !deleteResponse.getMessage().equalsIgnoreCase(getString(R.string.success))) {
+                        return;
+                    }
+                    int position = -1;
+                    for (int i = 0; i < creditCards.size(); i++) {
+                        if (creditCards.get(i).getCardNumber().equalsIgnoreCase(cardNumber)) {
+                            position = i;
+                        }
+                    }
+                    if (creditCards != null && !creditCards.isEmpty()) {
+                        Logger.i("position to delete:" + position + "," + creditCards.size());
+                        if(!creditCards.isEmpty()) {
+                            for (int i = 0; i < creditCards.size(); i++) {
+                                Logger.i("cards before:" + creditCards.get(i).getCardNumber());
+                            }
+                        }
+
+                        creditCards.remove(position);
+
+
+                        if(!creditCards.isEmpty()) {
+                            for (int i = 0; i < creditCards.size(); i++) {
+
+                                Logger.i("cards after:" + creditCards.get(i).getCardNumber());
+                            }
+                        }
+
+                        //notifydataset change not worked properly for viewpager so setting it again
+                        Logger.i("setting view pager value");
+                       // setViewPagerValues(creditCardsNew);
+                        /*if(creditCards.size()>1) {
+                            try {
+                                savedCardPager.setCurrentItem(position);
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                savedCardPager.setCurrentItem(creditCards.size() - 1);
+                            }
+                        }*/
+                        if (cardPagerAdapter != null && circlePageIndicator != null) {
+                            Logger.i("notifying data");
+                            cardPagerAdapter.notifyChangeInPosition(1);
+                            cardPagerAdapter.notifyDataSetChanged();
+                            circlePageIndicator.notifyDataSetChanged();
+                            if(creditCards.isEmpty()){
+                                emptyCardsTextViewFont.setVisibility(View.VISIBLE);
+                            } else {
+                                emptyCardsTextViewFont.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 }
