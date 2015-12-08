@@ -30,5 +30,6 @@
     <string name="using_indosat">Payment Using Indosat</string>
     <string name="using_indomaret">Payment Using Indomaret</string>
     <string name="transaction_pending">Transaction pending</string>
+    <string name="transaction_deny">Transaction deny</string>
 
 </resources>

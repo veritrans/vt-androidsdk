@@ -340,6 +340,9 @@ public class UiFlowActivity extends AppCompatActivity {
                     if (transactionResponse.getTransactionStatus().equalsIgnoreCase
                             (id.co.veritrans.sdk.core.Constants.PENDING)) {
                         SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_pending));
+                    } else if(transactionResponse.getTransactionStatus().equalsIgnoreCase
+                            (id.co.veritrans.sdk.core.Constants.DENY)){
+                        SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_deny));
                     } else if (!TextUtils.isEmpty(transactionResponse.getStatusMessage())) {
                         SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse
                                 .getStatusMessage());
