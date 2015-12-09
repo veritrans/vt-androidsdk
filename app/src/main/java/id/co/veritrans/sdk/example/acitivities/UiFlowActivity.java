@@ -338,12 +338,17 @@ public class UiFlowActivity extends AppCompatActivity {
 
                 if (transactionResponse != null) {
                     if(transactionResponse.getTransactionStatus().equalsIgnoreCase
-                            (id.co.veritrans.sdk.core.Constants.DENY)){
-                        SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_deny));
+                            (id.co.veritrans.sdk.core.Constants.DENY) ||  transactionResponse.getStatusCode()
+                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_202)){
+                        SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse.getStatusMessage());
                     } else if (transactionResponse.getTransactionStatus().equalsIgnoreCase
                             (id.co.veritrans.sdk.core.Constants.PENDING) || transactionResponse.getStatusCode()
                             .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_201) ) {
-                        SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_pending));
+                        if(transactionResponse.getFraudStatus().equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.CHALLENGE)){
+                            SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse.getStatusMessage());
+                        } else {
+                            SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_pending));
+                        }
                     } else if (!TextUtils.isEmpty(transactionResponse.getStatusMessage())) {
                         SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse
                                 .getStatusMessage());
