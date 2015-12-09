@@ -337,15 +337,19 @@ public class UiFlowActivity extends AppCompatActivity {
                 Log.d(TAG, "transaction error message " + errorMessage);
 
                 if (transactionResponse != null) {
-                    if (transactionResponse.getTransactionStatus().equalsIgnoreCase
-                            (id.co.veritrans.sdk.core.Constants.PENDING)) {
-                        SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_pending));
-                    } else if(transactionResponse.getTransactionStatus().equalsIgnoreCase
+                    if(transactionResponse.getTransactionStatus().equalsIgnoreCase
                             (id.co.veritrans.sdk.core.Constants.DENY)){
                         SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_deny));
+                    } else if (transactionResponse.getTransactionStatus().equalsIgnoreCase
+                            (id.co.veritrans.sdk.core.Constants.PENDING) || transactionResponse.getStatusCode()
+                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_201) ) {
+                        SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_pending));
                     } else if (!TextUtils.isEmpty(transactionResponse.getStatusMessage())) {
                         SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse
                                 .getStatusMessage());
+                    } else if(transactionResponse.getStatusCode()
+                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_200)){
+                        SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.payment_successful_msg));
                     }
                     Log.d(TAG, "transaction message " + transactionResponse.getStatusMessage());
                     // update Merchant Server;

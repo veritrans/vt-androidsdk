@@ -29,7 +29,8 @@
     <string name="using_credit">Payment Using Credit</string>
     <string name="using_indosat">Payment Using Indosat</string>
     <string name="using_indomaret">Payment Using Indomaret</string>
-    <string name="transaction_pending">Transaction pending</string>
-    <string name="transaction_deny">Transaction deny</string>
+    <string name="transaction_pending">Payment pending</string>
+    <string name="transaction_deny">Payment deny</string>
+    <string name="payment_successful_msg">Payment successful</string>
 
 </resources>
