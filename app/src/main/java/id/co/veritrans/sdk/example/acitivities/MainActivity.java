@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
-
+        startActivity(new Intent(MainActivity.this, CartActivity.class));
+        finish();
         setContentView(R.layout.activity_main);
 
         Button coreFlow = (Button) findViewById(R.id.btn_core_flow);

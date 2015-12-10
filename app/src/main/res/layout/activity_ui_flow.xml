@@ -1,91 +1,104 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+
+<ScrollView
+    android:layout_below="@id/toolbar"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <LinearLayout android:layout_height="match_parent"
+                  android:layout_width="match_parent"
                   android:orientation="vertical"
                   android:paddingBottom="@dimen/activity_vertical_margin"
                   android:paddingLeft="@dimen/activity_horizontal_margin"
                   android:paddingRight="@dimen/activity_horizontal_margin"
-                  android:paddingTop="@dimen/activity_vertical_margin"
-                  tools:context=".MainActivity">
+                  android:paddingTop="@dimen/activity_vertical_margin"                  >
         <Button
             android:id="@+id/btn_payment"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Payment"/>
-        <EditText
-            android:id="@+id/et_amount"
             android:layout_width="match_parent"
+            android:text="Set Values"/>
+        <EditText
+            android:hint="@string/payable_amount"
+            android:id="@+id/et_amount"
+            android:inputType="number"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/sixteen_dp"
-            android:hint="@string/payable_amount"
-            android:inputType="number"
+            android:layout_width="match_parent"
             />
 
         <id.co.veritrans.sdk.widgets.TextViewFont
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:text="@string/card_payment_options"
             android:textSize="@dimen/primary_text_size"
             />
 
         <RadioGroup
             android:id="@+id/click_rg"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             >
 
             <RadioButton
                 android:id="@+id/one_click_rd"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:text="@string/one_click"/>
 
             <RadioButton
                 android:id="@+id/two_click_rd"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:text="@string/two_click"/>
 
             <RadioButton
-                android:id="@+id/normal_rd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:checked="true"
+                android:id="@+id/normal_rd"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:text="@string/normal"/>
         </RadioGroup>
 
         <id.co.veritrans.sdk.widgets.TextViewFont
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:text="@string/security_option"
             android:textSize="@dimen/primary_text_size"
             />
 
         <RadioGroup
             android:id="@+id/secure_rg"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:paddingBottom="@dimen/sixteen_dp"
             >
 
             <RadioButton
-                android:id="@+id/seure_rd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:checked="true"
+                android:id="@+id/seure_rd"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:text="@string/secure"/>
 
             <RadioButton
                 android:id="@+id/unseure_rd"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:text="@string/unsecure"/>
         </RadioGroup>
 
-        <id.co.veritrans.sdk.widgets.TextViewFont
+        <!--<id.co.veritrans.sdk.widgets.TextViewFont
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/delete_saved_cards"
@@ -95,67 +108,68 @@
             android:id="@+id/btn_delete_cards"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/delete_cards"/>
+            android:text="@string/delete_cards"/>-->
 
         <id.co.veritrans.sdk.widgets.TextViewFont
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sixteen_dp"
+            android:layout_width="match_parent"
             android:text="@string/select_all_payment_methods"
             android:textSize="@dimen/primary_text_size"/>
-        <CheckBox android:id="@+id/cb_credit_card"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_credit_card"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/credit_card"/>
-        <CheckBox android:id="@+id/cb_banktransfer"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_banktransfer"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/bank_transfer"/>
-        <CheckBox android:id="@+id/cb_mandiri_bill"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_mandiri_bill"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/mandiri_bill_payment"/>
-        <CheckBox android:id="@+id/cb_mandiri_clickpay"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
+        <CheckBox android:checked="true"
                   android:enabled="true"
-                  android:checked="true"
+                  android:id="@+id/cb_mandiri_clickpay"
+                  android:layout_height="wrap_content"
+                  android:layout_width="match_parent"
                   android:text="@string/mandiri_click_pay"/>
-        <CheckBox android:id="@+id/cb_cimb_clickpay"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_cimb_clickpay"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/cimb_clicks"/>
-        <CheckBox android:id="@+id/cb_epay_bri"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_epay_bri"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/epay_bri"/>
-        <CheckBox android:id="@+id/cb_bbm_money"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_bbm_money"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/bbm_money"/>
-        <CheckBox android:id="@+id/cb_indosat"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_indosat"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/indosat_dompetku"/>
-        <CheckBox android:id="@+id/cb_manidri_ecash"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_manidri_ecash"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/mandiri_e_cash"/>
 
-        <CheckBox android:id="@+id/cb_indomaret"
-                  android:layout_width="match_parent"
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_indomaret"
                   android:layout_height="wrap_content"
-                  android:checked="true"
+                  android:layout_width="match_parent"
                   android:text="@string/indomaret"/>
 
 
     </LinearLayout>
 </ScrollView>
+</RelativeLayout>

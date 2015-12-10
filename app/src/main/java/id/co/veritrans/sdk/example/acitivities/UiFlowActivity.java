@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import id.co.veritrans.sdk.core.Logger;
@@ -29,9 +29,6 @@ import id.co.veritrans.sdk.example.VeritransExampleApp;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
 import id.co.veritrans.sdk.models.BBMCallBackUrl;
-import id.co.veritrans.sdk.models.BillInfoModel;
-import id.co.veritrans.sdk.models.CardTokenRequest;
-import id.co.veritrans.sdk.models.ItemDetails;
 import id.co.veritrans.sdk.models.PaymentMethodsModel;
 import id.co.veritrans.sdk.models.TransactionResponse;
 
@@ -73,6 +70,9 @@ public class UiFlowActivity extends AppCompatActivity {
         //Fabric.with(this, new Crashlytics());
 
         setContentView(R.layout.activity_ui_flow);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Options");
         creditCardCheckBox = (CheckBox) findViewById(R.id.cb_credit_card);
         mandiriClickpayCheckBox = (CheckBox) findViewById(R.id.cb_mandiri_clickpay);
         cimbClickpayCheckBox = (CheckBox) findViewById(R.id.cb_cimb_clickpay);
@@ -87,7 +87,7 @@ public class UiFlowActivity extends AppCompatActivity {
         amountEt = (EditText) findViewById(R.id.et_amount);
 
         if (BuildConfig.DEBUG) {
-            amountEt.setText("100");
+            amountEt.setText(""+Constants.AMOUNT);
         }
 
         storageDataHandler = new StorageDataHandler();
@@ -95,14 +95,14 @@ public class UiFlowActivity extends AppCompatActivity {
         clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
         secureradioGroup = (RadioGroup) findViewById(R.id.secure_rg);
         Button payment = (Button) findViewById(R.id.btn_payment);
-        Button deleteBt = (Button) findViewById(R.id.btn_delete_cards);
+        //Button deleteBt = (Button) findViewById(R.id.btn_delete_cards);
         unsecureRd = (RadioButton) findViewById(R.id.unseure_rd);
         secureRd = (RadioButton) findViewById(R.id.seure_rd);
 
         mVeritransSDK = (VeritransSDK) ((VeritransExampleApp) getApplication()).getVeritransSDK();
 
-        initialiseAdapterData();
-        deleteBt.setOnClickListener(new View.OnClickListener() {
+        selectedPaymentMethods = Utils.initialiseAdapterData(this);
+        /*deleteBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<CardTokenRequest> cards = new ArrayList<CardTokenRequest>();
@@ -113,7 +113,7 @@ public class UiFlowActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
         //String[] paymentMethods = getResources().getStringArray(R.id.payment_methods);
         payment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +175,7 @@ public class UiFlowActivity extends AppCompatActivity {
                 }
 
                 String amountData = amountEt.getText().toString();
-                int amount = 100;
+                int amount = Constants.AMOUNT;
 
                 if (amountData != null) {
                     try {
@@ -189,7 +189,8 @@ public class UiFlowActivity extends AppCompatActivity {
 
                 if (transactionRequest != null && mVeritransSDK != null) {
 
-                    transactionRequest = addTransactionInfo(transactionRequest, amount);
+                    transactionRequest = Utils.addTransactionInfo(transactionRequest, amount, clickType,
+                            secureRd.isChecked());
 
                     BBMCallBackUrl bbmCallBackUrl = new BBMCallBackUrl(Constants.CHECK_STATUS,
                             Constants.BEFORE_PAYMENT_ERROR, Constants.USER_CANCEL);
@@ -198,7 +199,8 @@ public class UiFlowActivity extends AppCompatActivity {
                     mVeritransSDK.setTransactionRequest(transactionRequest);
                     mVeritransSDK.setBBMCallBackUrl(bbmCallBackUrl);
                     // for ui
-                    mVeritransSDK.startPaymentUiFlow();
+                    //mVeritransSDK.startPaymentUiFlow();
+                    finish();
 
                 }
 
@@ -261,61 +263,11 @@ public class UiFlowActivity extends AppCompatActivity {
 
     }
 
-    private TransactionRequest addTransactionInfo(TransactionRequest transactionRequest, double amount) {
 
-        transactionRequest.setCardPaymentInfo(clickType, isSecure);
-        //to  perform transaction using mandiri bill payment.
-        // item details
-        ItemDetails itemDetails = new ItemDetails("1", amount, 1, "pen");
-        ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
-        itemDetailsArrayList.add(itemDetails);
-        transactionRequest.setItemDetails(itemDetailsArrayList);
 
-        // bill info
-        BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
-        transactionRequest.setBillInfoModel(billInfoModel);
 
-        //Logger.i("clickType"+clickType);
-        transactionRequest.setCardPaymentInfo(clickType, secureRd.isChecked());
-        return transactionRequest;
-    }
 
-    /**
-     * initialize adapter data model by dummy values.
-     */
-    private void initialiseAdapterData() {
 
-        String[] names = getResources().getStringArray(id.co.veritrans.sdk.R.array.payment_methods);
-        Logger.d(TAG, "there are total " + names.length + " payment methods available.");
-
-        int[] paymentImageList = getImageList();
-
-        for (int i = 0; i < names.length; i++) {
-            PaymentMethodsModel model = new PaymentMethodsModel(names[i], paymentImageList[i],
-                    id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
-            selectedPaymentMethods.add(model);
-        }
-
-    }
-
-    private int[] getImageList() {
-
-        int[] paymentImageList = new int[11];
-
-        paymentImageList[0] = id.co.veritrans.sdk.R.drawable.ic_offers;
-        paymentImageList[1] = id.co.veritrans.sdk.R.drawable.ic_credit;
-        paymentImageList[2] = id.co.veritrans.sdk.R.drawable.ic_mandiri2;
-        paymentImageList[3] = id.co.veritrans.sdk.R.drawable.ic_cimb;
-        paymentImageList[4] = id.co.veritrans.sdk.R.drawable.ic_epay;
-        paymentImageList[5] = id.co.veritrans.sdk.R.drawable.ic_bbm;
-        paymentImageList[6] = id.co.veritrans.sdk.R.drawable.ic_indosat;
-        paymentImageList[7] = id.co.veritrans.sdk.R.drawable.ic_mandiri_e_cash; // mandiri e-Cash
-        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_atm;
-        paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment2;
-        paymentImageList[10] = id.co.veritrans.sdk.R.drawable.ic_indomaret;
-
-        return paymentImageList;
-    }
 
     /**
      * onReceive will get called when transaction gets completed.

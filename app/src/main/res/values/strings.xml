@@ -22,7 +22,12 @@
     <string name="mandiri_bill_payment">Mandiri Bill Payment</string>
     <string name="indomaret">Indomaret</string>
     <string name="offers">Offers</string>
-    <string name="cheese_ipsum">Jarlsberg lancashire edam. Dolcelatte hard cheese brie st. agur blue     cheese caerphilly bavarian bergkase cheese and biscuits mascarpone. Cheeseburger swiss bavarian     bergkase cream cheese fromage frais cheesy feet port-salut airedale. St. agur blue cheese rubber     cheese caerphilly cheddar cheesecake cream cheese manchego lancashire. Roquefort squirty cheese     the big cheese.</string>
+    <string name="cheese_ipsum">Jarlsberg lancashire edam. Dolcelatte hard cheese brie st. agur blue
+        cheese caerphilly bavarian bergkase cheese and biscuits mascarpone. Cheeseburger swiss
+        bavarian bergkase cream cheese fromage frais cheesy feet port-salut airedale. St. agur blue
+        cheese rubber cheese caerphilly cheddar cheesecake cream cheese manchego lancashire.
+        Roquefort squirty cheese the big cheese.
+    </string>
     <string name="core_flow">Payment Using Core</string>
     <string name="ui_flow">Payment Using Ui</string>
     <string name="using_mandiri">Payment Using Mandiri</string>
@@ -32,5 +37,8 @@
     <string name="transaction_pending">Payment pending</string>
     <string name="transaction_deny">Payment deny</string>
     <string name="payment_successful_msg">Payment successful</string>
+    <string name="title_activity_cart">CartActivity</string>
+    <string name="buy">Buy</string>
+    <string name="option">Options</string>
 
 </resources>
