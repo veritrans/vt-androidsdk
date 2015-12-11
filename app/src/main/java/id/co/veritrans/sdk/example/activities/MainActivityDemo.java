@@ -1,4 +1,4 @@
-package id.co.veritrans.sdk.example.acitivities;
+package id.co.veritrans.sdk.example.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,16 +26,16 @@ import id.co.veritrans.sdk.example.utils.Constants;
  * created to show how developers can use veritrans sdk to perform transaction.
  *
  */
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivityDemo extends AppCompatActivity implements View.OnClickListener {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = MainActivityDemo.class.getSimpleName();
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Fabric.with(this, new Crashlytics());
-        startActivity(new Intent(MainActivity.this, CartActivity.class));
+        startActivity(new Intent(MainActivityDemo.this, CartActivity.class));
         finish();
         setContentView(R.layout.activity_main);
 
@@ -82,10 +82,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(view.getId() == R.id.btn_core_flow){
 
-            startActivity(new Intent(MainActivity.this, CoreFlowActivity.class));
+            startActivity(new Intent(MainActivityDemo.this, CoreFlowActivity.class));
 
         }else if(view.getId() == R.id.btn_ui_flow){
-            startActivity(new Intent(MainActivity.this, UiFlowActivity.class));
+            startActivity(new Intent(MainActivityDemo.this, UiFlowActivity.class));
         }
 
     }

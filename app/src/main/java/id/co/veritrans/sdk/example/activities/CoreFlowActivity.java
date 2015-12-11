@@ -1,4 +1,4 @@
-package id.co.veritrans.sdk.example.acitivities;
+package id.co.veritrans.sdk.example.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

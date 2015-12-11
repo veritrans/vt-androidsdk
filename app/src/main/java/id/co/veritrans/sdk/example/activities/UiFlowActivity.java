@@ -1,4 +1,4 @@
-package id.co.veritrans.sdk.example.acitivities;
+package id.co.veritrans.sdk.example.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,7 +28,6 @@ import id.co.veritrans.sdk.example.R;
 import id.co.veritrans.sdk.example.VeritransExampleApp;
 import id.co.veritrans.sdk.example.utils.Constants;
 import id.co.veritrans.sdk.example.utils.Utils;
-import id.co.veritrans.sdk.models.BBMCallBackUrl;
 import id.co.veritrans.sdk.models.PaymentMethodsModel;
 import id.co.veritrans.sdk.models.TransactionResponse;
 
@@ -99,7 +98,7 @@ public class UiFlowActivity extends AppCompatActivity {
         unsecureRd = (RadioButton) findViewById(R.id.unseure_rd);
         secureRd = (RadioButton) findViewById(R.id.seure_rd);
 
-        mVeritransSDK = (VeritransSDK) ((VeritransExampleApp) getApplication()).getVeritransSDK();
+        mVeritransSDK = ((VeritransExampleApp) getApplication()).getVeritransSDK();
 
         selectedPaymentMethods = Utils.initialiseAdapterData(this);
         /*deleteBt.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +152,7 @@ public class UiFlowActivity extends AppCompatActivity {
                         }
                         if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
                                 .indosat_dompetku))) {
-                            paymentMethodsModel.setIsSelected(true);
+                            paymentMethodsModel.setIsSelected(indosatCheckBox.isChecked());
 
                         }
                         if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
@@ -192,12 +191,18 @@ public class UiFlowActivity extends AppCompatActivity {
                     transactionRequest = Utils.addTransactionInfo(transactionRequest, amount, clickType,
                             secureRd.isChecked());
 
-                    BBMCallBackUrl bbmCallBackUrl = new BBMCallBackUrl(Constants.CHECK_STATUS,
-                            Constants.BEFORE_PAYMENT_ERROR, Constants.USER_CANCEL);
 
                     //start transaction
-                    mVeritransSDK.setTransactionRequest(transactionRequest);
+                    /*mVeritransSDK.setTransactionRequest(transactionRequest);
                     mVeritransSDK.setBBMCallBackUrl(bbmCallBackUrl);
+*/
+
+                    Intent data = new Intent();
+                    data.putExtra("amount", amount);
+                    data.putExtra("clickType",clickType);
+                    data.putExtra("isSecure",secureRd.isChecked());
+                    setResult(RESULT_OK,  data);
+
                     // for ui
                     //mVeritransSDK.startPaymentUiFlow();
                     finish();
