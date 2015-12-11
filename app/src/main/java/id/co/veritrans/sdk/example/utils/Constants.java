@@ -42,5 +42,5 @@ public class Constants {
     public static final String USER_CANCEL = "https://hangout.betas" +
             ".in/veritrans/api/error";
 
-
+    public static final int AMOUNT = 360000;
 }

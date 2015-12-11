@@ -5,10 +5,12 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import id.co.veritrans.sdk.core.Logger;
 import id.co.veritrans.sdk.core.StorageDataHandler;
+import id.co.veritrans.sdk.core.TransactionRequest;
 import id.co.veritrans.sdk.core.VeritransSDK;
 import id.co.veritrans.sdk.example.apicallinterfaces.ApiInterface;
 import id.co.veritrans.sdk.example.apicallinterfaces.RegisterTokenCallback;
@@ -17,6 +19,9 @@ import id.co.veritrans.sdk.example.model.RegisterDeviceResponse;
 import id.co.veritrans.sdk.example.model.TransactionUpdateMerchantResponse;
 import id.co.veritrans.sdk.example.apicallinterfaces.UpdateTransactionCallBack;
 import id.co.veritrans.sdk.example.model.TransactionMerchant;
+import id.co.veritrans.sdk.models.BillInfoModel;
+import id.co.veritrans.sdk.models.ItemDetails;
+import id.co.veritrans.sdk.models.PaymentMethodsModel;
 import id.co.veritrans.sdk.models.TransactionResponse;
 import id.co.veritrans.sdk.models.UserDetail;
 import rx.Observable;
@@ -240,5 +245,67 @@ public class Utils {
 
     }
 
+    /**
+     * initialize adapter data model by dummy values.
+     */
+    public static ArrayList<PaymentMethodsModel> initialiseAdapterData(Context context) {
+         ArrayList<PaymentMethodsModel> selectedPaymentMethods = new ArrayList<>();
+        String[] names = context.getResources().getStringArray(id.co.veritrans.sdk.R.array.payment_methods);
+        Logger.d(TAG, "there are total " + names.length + " payment methods available.");
 
+        int[] paymentImageList = getImageList();
+
+        for (int i = 0; i < names.length; i++) {
+            PaymentMethodsModel model = new PaymentMethodsModel(names[i], paymentImageList[i],
+                    id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
+            if(!model.getName().equalsIgnoreCase(context.getString(id.co.veritrans.sdk.R.string.offers))) {
+                model.setIsSelected(true);
+            } else {
+                model.setIsSelected(false);
+            }
+            selectedPaymentMethods.add(model);
+        }
+        return selectedPaymentMethods;
+
+    }
+
+    public static int[] getImageList() {
+
+        int[] paymentImageList = new int[11];
+
+        paymentImageList[0] = id.co.veritrans.sdk.R.drawable.ic_offers;
+        paymentImageList[1] = id.co.veritrans.sdk.R.drawable.ic_credit;
+        paymentImageList[2] = id.co.veritrans.sdk.R.drawable.ic_mandiri2;
+        paymentImageList[3] = id.co.veritrans.sdk.R.drawable.ic_cimb;
+        paymentImageList[4] = id.co.veritrans.sdk.R.drawable.ic_epay;
+        paymentImageList[5] = id.co.veritrans.sdk.R.drawable.ic_bbm;
+        paymentImageList[6] = id.co.veritrans.sdk.R.drawable.ic_indosat;
+        paymentImageList[7] = id.co.veritrans.sdk.R.drawable.ic_mandiri_e_cash; // mandiri e-Cash
+        paymentImageList[8] = id.co.veritrans.sdk.R.drawable.ic_atm;
+        paymentImageList[9] = id.co.veritrans.sdk.R.drawable.ic_mandiri_bill_payment2;
+        paymentImageList[10] = id.co.veritrans.sdk.R.drawable.ic_indomaret;
+
+        return paymentImageList;
+    }
+
+    public static TransactionRequest addTransactionInfo(TransactionRequest transactionRequest, double amount,
+                                                        String clickType, boolean isSecure) {
+
+
+        //to  perform transaction using mandiri bill payment.
+        // item details
+        ItemDetails itemDetails = new ItemDetails("1", amount, 1, "shoes");
+        ArrayList<ItemDetails> itemDetailsArrayList = new ArrayList<>();
+        itemDetailsArrayList.add(itemDetails);
+        transactionRequest.setItemDetails(itemDetailsArrayList);
+
+        // bill info
+        BillInfoModel billInfoModel = new BillInfoModel("demo_lable", "demo_value");
+        transactionRequest.setBillInfoModel(billInfoModel);
+
+        //Logger.i("clickType"+clickType);
+        transactionRequest.setCardPaymentInfo(clickType,isSecure);
+
+        return transactionRequest;
+    }
 }
