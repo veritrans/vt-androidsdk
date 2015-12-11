@@ -41,5 +41,7 @@
     <string name="buy">Buy</string>
     <string name="option">Options</string>
     <string name="pay">Pay</string>
+    <string name="select_all">Select All</string>
+    <string name="save">Save</string>
 
 </resources>

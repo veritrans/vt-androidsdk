@@ -9,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -35,7 +38,7 @@ import id.co.veritrans.sdk.models.TransactionResponse;
  * this is an example application,
  * created to show how developers can use veritrans sdk to perform transaction.
  */
-public class UiFlowActivity extends AppCompatActivity {
+public class UiFlowActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     public static final String TAG = UiFlowActivity.class.getSimpleName();
     private RadioGroup clickradioGroup;
@@ -59,6 +62,7 @@ public class UiFlowActivity extends AppCompatActivity {
     private CheckBox banktransferCheckBox;
     private CheckBox mandiriBillCheckBox;
     private CheckBox indomaretCheckBox;
+    private CheckBox selectAllCheckBox;
     private EditText amountEt;
 
     private ArrayList<PaymentMethodsModel> selectedPaymentMethods = new ArrayList<>();
@@ -82,18 +86,47 @@ public class UiFlowActivity extends AppCompatActivity {
         banktransferCheckBox = (CheckBox) findViewById(R.id.cb_banktransfer);
         mandiriBillCheckBox = (CheckBox) findViewById(R.id.cb_mandiri_bill);
         indomaretCheckBox = (CheckBox) findViewById(R.id.cb_indomaret);
+        selectAllCheckBox = (CheckBox) findViewById(R.id.cb_select_all);
+        creditCardCheckBox.setOnCheckedChangeListener(this);
+        mandiriClickpayCheckBox.setOnCheckedChangeListener(this);
+        cimbClickpayCheckBox.setOnCheckedChangeListener(this);
+        epayBriCheckBox.setOnCheckedChangeListener(this);
+        bbmMoneyCheckBox.setOnCheckedChangeListener(this);
+        indosatCheckBox.setOnCheckedChangeListener(this);
+        manidriEcashCheckBox.setOnCheckedChangeListener(this);
+        banktransferCheckBox.setOnCheckedChangeListener(this);
+        mandiriBillCheckBox.setOnCheckedChangeListener(this);
+        indomaretCheckBox.setOnCheckedChangeListener(this);
+
+
+        selectAllCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isChecked = ((CheckBox) v).isChecked();
+                creditCardCheckBox.setChecked(isChecked);
+                mandiriClickpayCheckBox.setChecked(isChecked);
+                cimbClickpayCheckBox.setChecked(isChecked);
+                epayBriCheckBox.setChecked(isChecked);
+                bbmMoneyCheckBox.setChecked(isChecked);
+                indosatCheckBox.setChecked(isChecked);
+                manidriEcashCheckBox.setChecked(isChecked);
+                banktransferCheckBox.setChecked(isChecked);
+                mandiriBillCheckBox.setChecked(isChecked);
+                indomaretCheckBox.setChecked(isChecked);
+            }
+        });
 
         amountEt = (EditText) findViewById(R.id.et_amount);
 
         if (BuildConfig.DEBUG) {
-            amountEt.setText(""+Constants.AMOUNT);
+            amountEt.setText("" + Constants.AMOUNT);
         }
 
         storageDataHandler = new StorageDataHandler();
 
         clickradioGroup = (RadioGroup) findViewById(R.id.click_rg);
         secureradioGroup = (RadioGroup) findViewById(R.id.secure_rg);
-        Button payment = (Button) findViewById(R.id.btn_payment);
+        //Button payment = (Button) findViewById(R.id.btn_payment);
         //Button deleteBt = (Button) findViewById(R.id.btn_delete_cards);
         unsecureRd = (RadioButton) findViewById(R.id.unseure_rd);
         secureRd = (RadioButton) findViewById(R.id.seure_rd);
@@ -114,124 +147,10 @@ public class UiFlowActivity extends AppCompatActivity {
             }
         });*/
         //String[] paymentMethods = getResources().getStringArray(R.id.payment_methods);
-        payment.setOnClickListener(new View.OnClickListener() {
+        /*payment.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
 
-                // transaction request initialization process.
-                if (mVeritransSDK != null) {
-                    for (PaymentMethodsModel paymentMethodsModel : selectedPaymentMethods) {
-                        Logger.i("" + paymentMethodsModel.getName());
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .credit_card))) {
-                            paymentMethodsModel.setIsSelected(creditCardCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .mandiri_clickpay))) {
-                            paymentMethodsModel.setIsSelected(mandiriClickpayCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .mandiri_bill_payment))) {
-                            paymentMethodsModel.setIsSelected(mandiriBillCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .cimb_clicks))) {
-                            paymentMethodsModel.setIsSelected(cimbClickpayCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .epay_bri))) {
-                            paymentMethodsModel.setIsSelected(epayBriCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .bbm_money))) {
-                            paymentMethodsModel.setIsSelected(bbmMoneyCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .indomaret))) {
-                            paymentMethodsModel.setIsSelected(indomaretCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .indosat_dompetku))) {
-                            paymentMethodsModel.setIsSelected(indosatCheckBox.isChecked());
-
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .mandiri_e_cash))) {
-                            paymentMethodsModel.setIsSelected(manidriEcashCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .bank_transfer))) {
-                            paymentMethodsModel.setIsSelected(banktransferCheckBox.isChecked());
-                        }
-                        if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
-                                .offers))) {
-                            paymentMethodsModel.setIsSelected(false);
-                        }
-                    }
-                }
-                if (mVeritransSDK != null) {
-                    mVeritransSDK.setSelectedPaymentMethods(selectedPaymentMethods);
-                }
-
-                String amountData = amountEt.getText().toString();
-                int amount = Constants.AMOUNT;
-
-                if (amountData != null) {
-                    try {
-                        amount = Integer.parseInt(amountData);
-                    } catch (NumberFormatException ex) {
-                    }
-                }
-
-                transactionRequest =
-                        new TransactionRequest(UiFlowActivity.this, Utils.generateOrderId(), amount);
-
-                if (transactionRequest != null && mVeritransSDK != null) {
-
-                    transactionRequest = Utils.addTransactionInfo(transactionRequest, amount, clickType,
-                            secureRd.isChecked());
-
-
-                    //start transaction
-                    /*mVeritransSDK.setTransactionRequest(transactionRequest);
-                    mVeritransSDK.setBBMCallBackUrl(bbmCallBackUrl);
-*/
-
-                    Intent data = new Intent();
-                    data.putExtra("amount", amount);
-                    data.putExtra("clickType",clickType);
-                    data.putExtra("isSecure",secureRd.isChecked());
-                    setResult(RESULT_OK,  data);
-
-                    // for ui
-                    //mVeritransSDK.startPaymentUiFlow();
-                    finish();
-
-                }
-
-                // "following code is added to test whether app allow to perform two"
-                // "transaction simultaneously in that case sdk should give an error"
-
-                //restart transaction
-                //mVeritransSDK.setTransactionRequest(transactionRequest);
-
-                //trying to create one more instance for debugging purpose. It should give u an
-                // error message like 'transaction already in progress'.
-
-                /*VeritransBuilder veritransBuilder2 = new
-                        VeritransBuilder(MainActivity.this,
-                        Constants.VT_CLIENT_KEY, Constants.VT_SERVER_KEY);
-
-                VeritransSDK veritransSDK2 = veritransBuilder2.buildSDK();
-
-                if(veritransSDK2 == null){
-                    Log.d(TAG , "failed to create sdk instance.");
-                }else{
-                    Log.d(TAG, "successfully created sdk instance.");
-                }*/
-
-            }
-        });
+        });*/
 
         clickradioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -268,12 +187,6 @@ public class UiFlowActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
-
-
     /**
      * onReceive will get called when transaction gets completed.
      */
@@ -294,14 +207,14 @@ public class UiFlowActivity extends AppCompatActivity {
                 Log.d(TAG, "transaction error message " + errorMessage);
 
                 if (transactionResponse != null) {
-                    if(transactionResponse.getTransactionStatus().equalsIgnoreCase
-                            (id.co.veritrans.sdk.core.Constants.DENY) ||  transactionResponse.getStatusCode()
-                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_202)){
+                    if (transactionResponse.getTransactionStatus().equalsIgnoreCase
+                            (id.co.veritrans.sdk.core.Constants.DENY) || transactionResponse.getStatusCode()
+                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_202)) {
                         SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse.getStatusMessage());
                     } else if (transactionResponse.getTransactionStatus().equalsIgnoreCase
                             (id.co.veritrans.sdk.core.Constants.PENDING) || transactionResponse.getStatusCode()
-                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_201) ) {
-                        if(transactionResponse.getFraudStatus().equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.CHALLENGE)){
+                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_201)) {
+                        if (transactionResponse.getFraudStatus().equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.CHALLENGE)) {
                             SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse.getStatusMessage());
                         } else {
                             SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.transaction_pending));
@@ -309,8 +222,8 @@ public class UiFlowActivity extends AppCompatActivity {
                     } else if (!TextUtils.isEmpty(transactionResponse.getStatusMessage())) {
                         SdkUtil.showSnackbar(UiFlowActivity.this, transactionResponse
                                 .getStatusMessage());
-                    } else if(transactionResponse.getStatusCode()
-                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_200)){
+                    } else if (transactionResponse.getStatusCode()
+                            .equalsIgnoreCase(id.co.veritrans.sdk.core.Constants.SUCCESS_CODE_200)) {
                         SdkUtil.showSnackbar(UiFlowActivity.this, getString(R.string.payment_successful_msg));
                     }
                     Log.d(TAG, "transaction message " + transactionResponse.getStatusMessage());
@@ -338,5 +251,139 @@ public class UiFlowActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+        if (!isChecked) {
+            selectAllCheckBox.setChecked(false);
+
+        } else if (creditCardCheckBox.isChecked() &&
+                mandiriClickpayCheckBox.isChecked() &&
+                cimbClickpayCheckBox.isChecked() &&
+                epayBriCheckBox.isChecked() &&
+                bbmMoneyCheckBox.isChecked() &&
+                indosatCheckBox.isChecked() &&
+                manidriEcashCheckBox.isChecked() &&
+                banktransferCheckBox.isChecked() &&
+                mandiriBillCheckBox.isChecked() &&
+                indomaretCheckBox.isChecked()) {
+                selectAllCheckBox.setChecked(true);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.option_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case R.id.save:
+                onClickSave();
+                break;
+
+        }
+        return true;
+    }
+
+    private void onClickSave() {
+
+        // transaction request initialization process.
+        if (mVeritransSDK != null) {
+            for (PaymentMethodsModel paymentMethodsModel : selectedPaymentMethods) {
+                Logger.i("" + paymentMethodsModel.getName());
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .credit_card))) {
+                    paymentMethodsModel.setIsSelected(creditCardCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .mandiri_clickpay))) {
+                    paymentMethodsModel.setIsSelected(mandiriClickpayCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .mandiri_bill_payment))) {
+                    paymentMethodsModel.setIsSelected(mandiriBillCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .cimb_clicks))) {
+                    paymentMethodsModel.setIsSelected(cimbClickpayCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .epay_bri))) {
+                    paymentMethodsModel.setIsSelected(epayBriCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .bbm_money))) {
+                    paymentMethodsModel.setIsSelected(bbmMoneyCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .indomaret))) {
+                    paymentMethodsModel.setIsSelected(indomaretCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .indosat_dompetku))) {
+                    paymentMethodsModel.setIsSelected(indosatCheckBox.isChecked());
+
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .mandiri_e_cash))) {
+                    paymentMethodsModel.setIsSelected(manidriEcashCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .bank_transfer))) {
+                    paymentMethodsModel.setIsSelected(banktransferCheckBox.isChecked());
+                }
+                if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
+                        .offers))) {
+                    paymentMethodsModel.setIsSelected(false);
+                }
+            }
+        }
+        if (mVeritransSDK != null) {
+            mVeritransSDK.setSelectedPaymentMethods(selectedPaymentMethods);
+        }
+
+        String amountData = amountEt.getText().toString();
+        int amount = Constants.AMOUNT;
+
+        if (amountData != null) {
+            try {
+                amount = Integer.parseInt(amountData);
+            } catch (NumberFormatException ex) {
+            }
+        }
+
+        transactionRequest =
+                new TransactionRequest(UiFlowActivity.this, Utils.generateOrderId(), amount);
+
+        if (transactionRequest != null && mVeritransSDK != null) {
+
+            transactionRequest = Utils.addTransactionInfo(transactionRequest, amount, clickType,
+                    secureRd.isChecked());
+
+            //start transaction
+                    /*mVeritransSDK.setTransactionRequest(transactionRequest);
+                    mVeritransSDK.setBBMCallBackUrl(bbmCallBackUrl);
+*/
+
+            Intent data = new Intent();
+            data.putExtra("amount", amount);
+            data.putExtra("clickType", clickType);
+            data.putExtra("isSecure", secureRd.isChecked());
+            setResult(RESULT_OK, data);
+
+            // for ui
+            //mVeritransSDK.startPaymentUiFlow();
+            finish();
+
+        }
     }
 }
