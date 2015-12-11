@@ -165,7 +165,7 @@ public class UiFlowActivity extends AppCompatActivity {
                         }
                         if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
                                 .offers))) {
-                            paymentMethodsModel.setIsSelected(false);
+                            paymentMethodsModel.setIsSelected(true);
                         }
                     }
                 }
