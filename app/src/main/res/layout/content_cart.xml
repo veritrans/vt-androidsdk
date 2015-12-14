@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="id.co.veritrans.sdk.example.activities.CartActivity"
+    tools:showIn="@layout/activity_cart">
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:paddingBottom="8dp">
+        <ImageView android:layout_width="80dp"
+                   android:layout_height="80dp"
+                   android:src="@drawable/shoes_one"
+            />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:paddingLeft="24dp"
+            >
+            <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="match_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:text="Treaking shoes"
+                                                      android:textSize="18sp"/>
+            <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="match_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:layout_marginTop="10dp"
+                                                      android:text="120,000 Rp"
+                                                      android:textSize="20sp"
+                                                      android:textStyle="bold"/>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="10dp"
+                          android:gravity="center_vertical"
+                          android:orientation="horizontal"
+                          android:weightSum="1"
+                >
+                <Button android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/ic_minus_blue_circle"
+
+                        android:padding="10dp"
+                    />
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                    >
+                    <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="wrap_content"
+                                                              android:layout_height="30dp"
+                                                              android:layout_gravity="center"
+                                                              android:layout_marginTop="10dp"
+                                                              android:paddingLeft="16dp"
+                                                              android:paddingRight="16dp"
+                                                              android:text="1"
+                                                              android:layout_centerInParent="true"
+                                                              android:textSize="20sp"
+                                                              android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <Button android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/ic_plus_blue_circle"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <View android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="#dfdfdf"
+        />
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:paddingBottom="8dp"
+                  android:paddingTop="8dp">
+        <ImageView android:layout_width="80dp"
+                   android:layout_height="80dp"
+                   android:src="@drawable/shoes_two"
+            />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:paddingLeft="24dp"
+            >
+            <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="match_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:text="Casual shoes"
+                                                      android:textSize="18sp"/>
+            <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="match_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:layout_marginTop="10dp"
+                                                      android:text="120,000 Rp"
+                                                      android:textSize="20sp"
+                                                      android:textStyle="bold"/>
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:layout_marginTop="10dp"
+                          android:gravity="center_vertical"
+                          android:orientation="horizontal"
+                          android:weightSum="1"
+                >
+                <Button android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/ic_minus_blue_circle"
+
+                        android:padding="10dp"
+                    />
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                    >
+                    <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="wrap_content"
+                                                              android:layout_height="30dp"
+                                                              android:layout_gravity="center"
+                                                              android:layout_marginTop="10dp"
+                                                              android:paddingLeft="16dp"
+                                                              android:paddingRight="16dp"
+                                                              android:text="1"
+                                                              android:layout_centerInParent="true"
+                                                              android:textSize="20sp"
+                                                              android:textStyle="bold"/>
+                </RelativeLayout>
+                <Button android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/ic_plus_blue_circle"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <View android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="#dfdfdf"/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:paddingBottom="8dp"
+                  android:paddingTop="8dp">
+        <ImageView android:layout_width="80dp"
+                   android:layout_height="80dp"
+                   android:src="@drawable/shoes_three"
+            />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:paddingLeft="24dp"
+            >
+            <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="match_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:text="Formal shoes"
+                                                      android:textSize="18sp"/>
+            <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="match_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:layout_marginTop="10dp"
+                                                      android:text="120,000 Rp"
+                                                      android:textSize="20sp"
+                                                      android:textStyle="bold"/>
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="10dp"
+                          android:gravity="center_vertical"
+                          android:orientation="horizontal"
+                          android:weightSum="1"
+                >
+                <Button android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/ic_minus_blue_circle"
+
+                        android:padding="10dp"
+                    />
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                    >
+                    <id.co.veritrans.sdk.widgets.TextViewFont android:layout_width="wrap_content"
+                                                              android:layout_height="30dp"
+                                                              android:layout_gravity="center"
+                                                              android:layout_marginTop="10dp"
+                                                              android:paddingLeft="16dp"
+                                                              android:paddingRight="16dp"
+                                                              android:text="1"
+                                                              android:layout_centerInParent="true"
+                                                              android:textSize="20sp"
+                                                              android:textStyle="bold"/>
+                </RelativeLayout>
+                <Button android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/ic_plus_blue_circle"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+    <View android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="#dfdfdf"
+        />
+    <Button
+        android:id="@+id/btn_payment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:textSize="16sp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/blue_button_selector"
+        android:text="@string/buy"
+        android:textAllCaps="true"
+        android:textColor="@color/white"/>
+
+</LinearLayout>
