@@ -283,5 +283,3 @@ public class CartActivity extends AppCompatActivity {
         unregisterReceiver(broadcastReceiver);
     }
 }
-
-

@@ -24,11 +24,11 @@
                   android:paddingLeft="@dimen/activity_horizontal_margin"
                   android:paddingRight="@dimen/activity_horizontal_margin"
                   android:paddingTop="@dimen/activity_vertical_margin"                  >
-        <Button
+       <!-- <Button
             android:id="@+id/btn_payment"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Set Values"/>
+            android:text="Set Values"/>-->
         <EditText
             android:hint="@string/payable_amount"
             android:id="@+id/et_amount"
@@ -117,6 +117,11 @@
             android:layout_width="match_parent"
             android:text="@string/select_all_payment_methods"
             android:textSize="@dimen/primary_text_size"/>
+        <CheckBox android:checked="true"
+                  android:id="@+id/cb_select_all"
+                  android:layout_height="wrap_content"
+                  android:layout_width="match_parent"
+                  android:text="@string/select_all"/>
         <CheckBox android:checked="true"
                   android:id="@+id/cb_credit_card"
                   android:layout_height="wrap_content"
