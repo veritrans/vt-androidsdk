@@ -66,6 +66,7 @@
     <string name="hint_cvv">CVV</string>
     <string name="save_card_message">Save this card for future use</string>
     <string name="pay_now">Pay now</string>
+    <string name="pay_with_instalments">Pay with instalments</string>
     <string name="validatation_message_card_holder_name">Please enter card holder name</string>
     <string name="hint_expiry_date">Expiry(mm/yy)</string>
     <string name="validation_message_card_number">Please enter card number</string>
@@ -85,6 +86,8 @@
 
     <string name="enter_cvv">Enter cvv</string>
     <string name="valid_thru">Valid Thru</string>
+
+    <string name="zero_month">0 Month</string>
 
 
     <!-- Permata VA Bank Transfer-->
@@ -222,6 +225,7 @@
     <string name="company_code">Company Code</string>
     <string name="bill_code">Billpay Code</string>
     <string name="processing_payment">Processing Payment</string>
+    <string name="fetching_offers">Fetching Offers</string>
 
 
     <string name="credit_card">Credit/Debit Card</string>
@@ -275,5 +279,9 @@
     <string name="title_payment_status">Payment Status</string>
     <string name="payment_deny">Payment deny.</string>
     <string name="success">success</string>
+    <string name="fetching_cards">Fetching cards</string>
+
+    <string name="offer_applied">Offer Applied Successfully !</string>
+    <string name="offer_not_applied">Offer is not applicable on this card</string>
 
 </resources>
