@@ -158,18 +158,21 @@ public class UiFlowActivity extends AppCompatActivity implements CompoundButton.
                 if (checkedId == R.id.one_click_rd) {
                     Logger.i("one click");
                     clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_ONE_CLICK;
-                    secureRd.setChecked(true);
-                    unsecureRd.setEnabled(false);
+                    unsecureRd.setEnabled(true);
+                    unsecureRd.setChecked(true);
+                    secureRd.setEnabled(false);
 
                 } else if (checkedId == R.id.two_click_rd) {
                     Logger.i("two click");
                     clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_TWO_CLICK;
+                    secureRd.setEnabled(true);
                     secureRd.setChecked(true);
                     unsecureRd.setEnabled(false);
                 } else {
                     Logger.i("normal");
                     clickType = id.co.veritrans.sdk.core.Constants.CARD_CLICK_TYPE_NONE;
                     unsecureRd.setEnabled(true);
+                    secureRd.setEnabled(true);
                 }
             }
         });
