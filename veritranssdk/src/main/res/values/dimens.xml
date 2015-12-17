@@ -8,21 +8,28 @@
     <dimen name="four_dp">4dp</dimen>
     <dimen name="five_dp">5dp</dimen>
     <dimen name="eight_dp">8dp</dimen>
+    <dimen name="eleven_dp">11dp</dimen>
     <dimen name="twelve_dp">12dp</dimen>
+    <dimen name="fourteen_dp">14dp</dimen>
     <dimen name="sixteen_dp">16dp</dimen>
+
     <dimen name="twenty_four_dp">24dp</dimen>
     <dimen name="btn_height">48dp</dimen>
     <dimen name="twentyfour">24dp</dimen>
     <dimen name="sixtyfour_dp">64dp</dimen>
+    <dimen name="seventy_dp">80dp</dimen>
     <dimen name="eighty_dp">80dp</dimen>
     <dimen name="fiftyfour_dp">54dp</dimen>
+    <dimen name="fortytwo_dp">54dp</dimen>
     <dimen name="tool_bar_height">56dp</dimen>
 
 
     <!-- text size-->
+    <dimen name="eleven_sp">11sp</dimen>
     <dimen name="big_text">22sp</dimen>
     <dimen name="header_text_size">20sp</dimen>
     <dimen name="primary_text_size">16sp</dimen>
+    <dimen name="seventeen_sp">17sp</dimen>
     <dimen name="tool_bar_title_size">18sp</dimen>
 
     <dimen name="secondary_text_size">14sp</dimen>

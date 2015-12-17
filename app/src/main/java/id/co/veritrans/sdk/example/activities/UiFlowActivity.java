@@ -343,7 +343,7 @@ public class UiFlowActivity extends AppCompatActivity implements CompoundButton.
                 }
                 if (paymentMethodsModel.getName().equalsIgnoreCase(getString(R.string
                         .offers))) {
-                    paymentMethodsModel.setIsSelected(false);
+                    paymentMethodsModel.setIsSelected(true);
                 }
             }
         }

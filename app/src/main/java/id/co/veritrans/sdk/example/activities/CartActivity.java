@@ -112,7 +112,8 @@ public class CartActivity extends AppCompatActivity {
             }
         });
         setPaymentValues();
-        payBtn.setText(getString(R.string.pay) + " " + amount);
+        payBtn.setText( getString(R.string.pay) +" "+getString(R.string.rp) +
+                id.co.veritrans.sdk.utilities.Utils.getFormatedAmount(amount));
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -194,8 +195,10 @@ public class CartActivity extends AppCompatActivity {
             amount = data.getIntExtra("amount", Constants.AMOUNT);
             clickType = data.getStringExtra("clickType");
             isSecure = data.getBooleanExtra("isSecure",true);
-            Logger.i("Amount:"+amount);
-            payBtn.setText(getString(R.string.pay)+" "+amount);
+            Logger.i("Amount:" + amount);
+            //payBtn.setText(getString(R.string.pay)+" "+amount);
+            payBtn.setText( getString(R.string.pay) +" "+getString(R.string.rp) +
+                    id.co.veritrans.sdk.utilities.Utils.getFormatedAmount(amount));
 
 
         }

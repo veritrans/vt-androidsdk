@@ -258,11 +258,11 @@ public class Utils {
         for (int i = 0; i < names.length; i++) {
             PaymentMethodsModel model = new PaymentMethodsModel(names[i], paymentImageList[i],
                     id.co.veritrans.sdk.core.Constants.PAYMENT_METHOD_NOT_SELECTED);
-            if(!model.getName().equalsIgnoreCase(context.getString(id.co.veritrans.sdk.R.string.offers))) {
+//            if(!model.getName().equalsIgnoreCase(context.getString(id.co.veritrans.sdk.R.string.offers))) {
                 model.setIsSelected(true);
-            } else {
-                model.setIsSelected(false);
-            }
+//            } else {
+//                model.setIsSelected(true);
+//            }
             selectedPaymentMethods.add(model);
         }
         return selectedPaymentMethods;
