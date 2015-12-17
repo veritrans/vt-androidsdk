@@ -43,5 +43,6 @@
     <string name="pay">Pay</string>
     <string name="select_all">Select All</string>
     <string name="save">Save</string>
+    <string name="rp">Rp.</string>
 
 </resources>
