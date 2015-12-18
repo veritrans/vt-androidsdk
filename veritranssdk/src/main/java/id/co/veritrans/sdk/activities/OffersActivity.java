@@ -3,6 +3,9 @@ package id.co.veritrans.sdk.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
+import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -49,7 +52,9 @@ import id.co.veritrans.sdk.models.TransactionDetails;
 import id.co.veritrans.sdk.models.TransactionResponse;
 import id.co.veritrans.sdk.models.UserAddress;
 import id.co.veritrans.sdk.models.UserDetail;
+import id.co.veritrans.sdk.utilities.Utils;
 import id.co.veritrans.sdk.widgets.CirclePageIndicator;
+import id.co.veritrans.sdk.widgets.MorphingButton;
 import id.co.veritrans.sdk.widgets.TextViewFont;
 import rx.Subscriber;
 import rx.Subscription;
@@ -113,7 +118,7 @@ public class OffersActivity extends AppCompatActivity implements TokenCallBack, 
     private CardPagerAdapter cardPagerAdapter;
     private CirclePageIndicator circlePageIndicator;
     private TextViewFont emptyCardsTextViewFont;
-
+    private MorphingButton btnMorph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +127,8 @@ public class OffersActivity extends AppCompatActivity implements TokenCallBack, 
         storageDataHandler = new StorageDataHandler();
         veritransSDK = VeritransSDK.getVeritransSDK();
         fragmentManager = getSupportFragmentManager();
-
+        btnMorph = (MorphingButton) findViewById(R.id.btnMorph1);
+        morphToCircle(0);
 
         // get position of selected payment method
         Intent data = getIntent();
@@ -342,7 +348,9 @@ public class OffersActivity extends AppCompatActivity implements TokenCallBack, 
     //onSuccess for get token
     @Override
     public void onSuccess(TokenDetailsResponse tokenDetailsResponse) {
-
+        if(tokenDetailsResponse!=null) {
+            cardTokenRequest.setBank(tokenDetailsResponse.getBank());
+        }
         this.tokenDetailsResponse = tokenDetailsResponse;
         Logger.i("token suc:" + tokenDetailsResponse.getTokenId() + ","
                 + veritransSDK.getTransactionRequest().isSecureCard());
@@ -436,7 +444,18 @@ public class OffersActivity extends AppCompatActivity implements TokenCallBack, 
                 /*String formatedCardNumber = cardTokenRequest.getFormatedCardNumber();
                 formatedCardNumber = formatedCardNumber.replace("-","");
                 cardTokenRequest.setCardNumber(formatedCardNumber);*/
-                cardTokenRequest.setBank(Constants.BANK_NAME);
+                //cardTokenRequest.setBank(Constants.BANK_NAME);
+                if (bankDetails != null && !bankDetails.isEmpty()) {
+                    String firstSix = cardTokenRequest.getCardNumber().substring(0, 6);
+                    for (BankDetail bankDetail : bankDetails) {
+                        if (bankDetail.getBin().equalsIgnoreCase(firstSix)) {
+                            cardTokenRequest.setBank(bankDetail.getIssuing_bank());
+                            cardTokenRequest.setCardType(bankDetail.getCard_association());
+                            break;
+                        }
+                    }
+                }
+
                 if (cardTokenRequest.isSaved() && !TextUtils.isEmpty(cardPaymentResponse
                         .getSavedTokenId())) {
                     cardTokenRequest.setSavedTokenId(cardPaymentResponse.getSavedTokenId());
@@ -496,7 +515,7 @@ public class OffersActivity extends AppCompatActivity implements TokenCallBack, 
         veritransSDK.getSavedCard(this, new SavedCardCallback() {
             @Override
             public void onSuccess(CardResponse cardResponse) {
-              //  SdkUtil.hideProgressDialog();
+                //  SdkUtil.hideProgressDialog();
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -532,7 +551,6 @@ public class OffersActivity extends AppCompatActivity implements TokenCallBack, 
 //                            .newInstance(OFFER_NAME);
 //                    replaceFragment(addCardDetailsFragment, true, false);
                 }
-
 
             }
 
@@ -678,6 +696,62 @@ public class OffersActivity extends AppCompatActivity implements TokenCallBack, 
         this.cardPagerAdapter = cardPagerAdapter;
         this.circlePageIndicator = circlePageIndicator;
         this.emptyCardsTextViewFont = emptyCardsTextViewFont;
+    }
+
+    public void morphingAnimation(){
+        Logger.i("morphingAnimation");
+        //Logger.i("64dp:"+ Utils.dpToPx(56));
+        btnMorph.setVisibility(View.VISIBLE);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MorphingButton.Params square = MorphingButton.Params.create()
+                        .duration((int) Constants.CARD_ANIMATION_TIME)
+                        .cornerRadius(dimen(R.dimen.mb_corner_radius_2))
+                        .width((int) cardWidth)
+                        .height(Utils.dpToPx(Constants.FAB_HEIGHT_DP))
+                        .text(getString(R.string.pay_now))
+                        .colorPressed(color(R.color.colorAccent))
+                        .color(color(R.color.colorAccent));
+                btnMorph.morph(square);
+            }
+        }, 50);
+
+
+
+    }
+    public MorphingButton.Params morphCicle(int time) {
+        return MorphingButton.Params.create()
+                .cornerRadius(Utils.dpToPx(Constants.FAB_HEIGHT_DP))
+                .width(Utils.dpToPx(Constants.FAB_HEIGHT_DP))
+                .height(Utils.dpToPx(Constants.FAB_HEIGHT_DP))
+                .duration(time)
+                .colorPressed(color(R.color.colorAccent))
+                .color(color(R.color.colorAccent));
+
+
+    }
+
+    public int dimen(@DimenRes int resId) {
+        return (int) getResources().getDimension(resId);
+    }
+
+    public int color(@ColorRes int resId) {
+        return getResources().getColor(resId);
+    }
+
+    public int integer(@IntegerRes int resId) {
+        return getResources().getInteger(resId);
+    }
+
+    public MorphingButton getBtnMorph() {
+        return btnMorph;
+    }
+    
+    public void morphToCircle(int time) {
+        MorphingButton.Params circle = morphCicle(time);
+        btnMorph.morph(circle);
     }
 }
 

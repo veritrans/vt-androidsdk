@@ -1,9 +1,11 @@
 package id.co.veritrans.sdk.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
+import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -50,7 +52,9 @@ import id.co.veritrans.sdk.models.TransactionDetails;
 import id.co.veritrans.sdk.models.TransactionResponse;
 import id.co.veritrans.sdk.models.UserAddress;
 import id.co.veritrans.sdk.models.UserDetail;
+import id.co.veritrans.sdk.utilities.Utils;
 import id.co.veritrans.sdk.widgets.CirclePageIndicator;
+import id.co.veritrans.sdk.widgets.MorphingButton;
 import id.co.veritrans.sdk.widgets.TextViewFont;
 import rx.Subscriber;
 import rx.Subscription;
@@ -84,6 +88,16 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
     private CirclePageIndicator circlePageIndicator;
     private TextViewFont emptyCardsTextViewFont;
     private TextViewFont titleHeaderTextViewFont;
+    private int fabHeight;
+    private MorphingButton btnMorph;
+
+    public MorphingButton getBtnMorph() {
+        return btnMorph;
+    }
+
+    /*public void setBtnMorph(MorphingButton btnMorph) {
+        this.btnMorph = btnMorph;
+    }*/
 
     public TextViewFont getTitleHeaderTextViewFont() {
         return titleHeaderTextViewFont;
@@ -99,11 +113,18 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
         fragmentManager = getSupportFragmentManager();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         titleHeaderTextViewFont = (TextViewFont) findViewById(R.id.title_header);
+        btnMorph = (MorphingButton) findViewById(R.id.btnMorph1);
+        morphToCircle(0);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         calculateScreenWidth();
         getCreditCards();
         readBankDetails();
+    }
+
+    public void morphToCircle(int time) {
+        MorphingButton.Params circle = morphCicle(time);
+        btnMorph.morph(circle);
     }
 
     @Override
@@ -205,11 +226,11 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
             if (veritransSDK.getTransactionRequest().getCardClickType().equalsIgnoreCase
                     (Constants.CARD_CLICK_TYPE_ONE_CLICK) &&
                     !TextUtils.isEmpty(cardTokenRequest.getSavedTokenId())) {
-                cardPaymentDetails = new CardPaymentDetails(Constants.BANK_NAME,
+                cardPaymentDetails = new CardPaymentDetails(cardTokenRequest.getBank(),
                         cardTokenRequest.getSavedTokenId(), cardTokenRequest.isSaved());
             } else if (tokenDetailsResponse != null) {
                 Logger.i("tokenDetailsResponse.getTokenId():" + tokenDetailsResponse.getTokenId());
-                cardPaymentDetails = new CardPaymentDetails(Constants.BANK_NAME,
+                cardPaymentDetails = new CardPaymentDetails(cardTokenRequest.getBank(),
                         tokenDetailsResponse.getTokenId(), cardTokenRequest.isSaved());
             } else {
                 SdkUtil.hideProgressDialog();
@@ -280,10 +301,12 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
     //onSuccess for get token
     @Override
     public void onSuccess(TokenDetailsResponse tokenDetailsResponse) {
-
+        if(tokenDetailsResponse!=null) {
+            cardTokenRequest.setBank(tokenDetailsResponse.getBank());
+        }
         this.tokenDetailsResponse = tokenDetailsResponse;
         Logger.i("token suc:" + tokenDetailsResponse.getTokenId() + ","
-                + veritransSDK.getTransactionRequest().isSecureCard());
+                + veritransSDK.getTransactionRequest().isSecureCard()+","+tokenDetailsResponse.getBank());
         if (veritransSDK.getTransactionRequest().isSecureCard()) {
             SdkUtil.hideProgressDialog();
             if (!TextUtils.isEmpty(tokenDetailsResponse.getRedirectUrl())) {
@@ -374,7 +397,17 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
                 /*String formatedCardNumber = cardTokenRequest.getFormatedCardNumber();
                 formatedCardNumber = formatedCardNumber.replace("-","");
                 cardTokenRequest.setCardNumber(formatedCardNumber);*/
-                cardTokenRequest.setBank(Constants.BANK_NAME);
+                /*if (bankDetails != null && !bankDetails.isEmpty()) {
+                    String firstSix = cardTokenRequest.getCardNumber().substring(0, 6);
+                    for (BankDetail bankDetail : bankDetails) {
+                        if (bankDetail.getBin().equalsIgnoreCase(firstSix)) {
+                            cardTokenRequest.setBank(bankDetail.getIssuing_bank());
+                            cardTokenRequest.setCardType(bankDetail.getCard_association());
+                            break;
+                        }
+                    }
+                }*/
+
                 if (cardTokenRequest.isSaved() && !TextUtils.isEmpty(cardPaymentResponse
                         .getSavedTokenId())) {
                     cardTokenRequest.setSavedTokenId(cardPaymentResponse.getSavedTokenId());
@@ -618,5 +651,60 @@ public class CreditDebitCardFlowActivity extends AppCompatActivity implements To
         this.cardPagerAdapter = cardPagerAdapter;
         this.circlePageIndicator = circlePageIndicator;
         this.emptyCardsTextViewFont = emptyCardsTextViewFont;
+    }
+
+    public int getFabHeight() {
+        return fabHeight;
+    }
+
+    public void setFabHeight(int fabHeight) {
+        Logger.i("fab_height:" + fabHeight);
+        this.fabHeight = fabHeight;
+    }
+    public void morphingAnimation(){
+        Logger.i("morphingAnimation");
+        //Logger.i("64dp:"+ Utils.dpToPx(56));
+        btnMorph.setVisibility(View.VISIBLE);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MorphingButton.Params square = MorphingButton.Params.create()
+                        .duration((int) Constants.CARD_ANIMATION_TIME)
+                        .cornerRadius(dimen(R.dimen.mb_corner_radius_2))
+                        .width((int) cardWidth)
+                        .height(Utils.dpToPx(Constants.FAB_HEIGHT_DP))
+                        .text(getString(R.string.pay_now))
+                        .colorPressed(color(R.color.colorAccent))
+                        .color(color(R.color.colorAccent));
+                btnMorph.morph(square);
+            }
+        }, 50);
+
+
+
+    }
+    public MorphingButton.Params morphCicle(int time) {
+        return MorphingButton.Params.create()
+                    .cornerRadius(Utils.dpToPx(Constants.FAB_HEIGHT_DP))
+                    .width(Utils.dpToPx(Constants.FAB_HEIGHT_DP))
+                    .height(Utils.dpToPx(Constants.FAB_HEIGHT_DP))
+                    .duration(time)
+                    .colorPressed(color(R.color.colorAccent))
+                    .color(color(R.color.colorAccent));
+
+
+    }
+
+    public int dimen(@DimenRes int resId) {
+        return (int) getResources().getDimension(resId);
+    }
+
+    public int color(@ColorRes int resId) {
+        return getResources().getColor(resId);
+    }
+
+    public int integer(@IntegerRes int resId) {
+        return getResources().getInteger(resId);
     }
 }

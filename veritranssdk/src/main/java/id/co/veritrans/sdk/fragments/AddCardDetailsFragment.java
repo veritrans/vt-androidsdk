@@ -1,5 +1,7 @@
 package id.co.veritrans.sdk.fragments;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +52,7 @@ public class AddCardDetailsFragment extends Fragment {
     private UserDetail userDetail;
     private ArrayList<BankDetail> bankDetails;
     private String cardType = "";
+    private RelativeLayout formLayout;
 
     public AddCardDetailsFragment() {
     }
@@ -67,7 +71,7 @@ public class AddCardDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((CreditDebitCardFlowActivity)getActivity()).getTitleHeaderTextViewFont().setText(getString(R.string.card_details));
+        ((CreditDebitCardFlowActivity) getActivity()).getTitleHeaderTextViewFont().setText(getString(R.string.card_details));
         veritransSDK = ((CreditDebitCardFlowActivity) getActivity()).getVeritransSDK();
         userDetail = ((CreditDebitCardFlowActivity) getActivity()).getUserDetail();
         bankDetails = ((CreditDebitCardFlowActivity) getActivity()).getBankDetails();
@@ -92,10 +96,13 @@ public class AddCardDetailsFragment extends Fragment {
             e.printStackTrace();
         }
         bindViews(view);
+        ((CreditDebitCardFlowActivity) getActivity()).getBtnMorph().setVisibility(View.GONE);
+        fadeIn();
         super.onViewCreated(view, savedInstanceState);
     }
 
     private void bindViews(View view) {
+        formLayout = (RelativeLayout) view.findViewById(R.id.form_layout);
         etCardNo = (EditText) view.findViewById(R.id.et_card_no);
         etCvv = (EditText) view.findViewById(R.id.et_cvv);
         etExpiryDate = (EditText) view.findViewById(R.id.et_exp_date);
@@ -103,6 +110,7 @@ public class AddCardDetailsFragment extends Fragment {
         questionImg = (ImageView) view.findViewById(R.id.image_question);
         questionSaveCardImg = (ImageView) view.findViewById(R.id.image_question_save_card);
         payNowBtn = (Button) view.findViewById(R.id.btn_pay_now);
+        //formLayout.setAlpha(0);
         etCardNo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -297,7 +305,8 @@ public class AddCardDetailsFragment extends Fragment {
             if (isPayButtonClick) {
                 SdkUtil.showSnackbar(getActivity(), getString(R.string.validation_message_card_number));
                 // etCardNo.requestFocus();
-            } if(!etCardNo.hasFocus()) {
+            }
+            if (!etCardNo.hasFocus()) {
                 etCardNo.setError(getString(R.string.validation_message_card_number));
             }
             /*etExpiryDate.clearFocus();
@@ -307,7 +316,7 @@ public class AddCardDetailsFragment extends Fragment {
             /*etCardNo.requestFocus();
             etExpiryDate.clearFocus();
             etCvv.clearFocus();*/
-            if(!etCardNo.hasFocus()) {
+            if (!etCardNo.hasFocus()) {
                 etCardNo.setError(getString(R.string.validation_message_invalid_card_no));
             }
             if (isPayButtonClick) {
@@ -323,7 +332,8 @@ public class AddCardDetailsFragment extends Fragment {
             if (isPayButtonClick) {
                 SdkUtil.showSnackbar(getActivity(), getString(R.string
                         .validation_message_empty_expiry_date));
-            } if(!etExpiryDate.hasFocus()) {
+            }
+            if (!etExpiryDate.hasFocus()) {
                 etExpiryDate.setError(getString(R.string.validation_message_empty_expiry_date));
             }
             return false;
@@ -335,7 +345,7 @@ public class AddCardDetailsFragment extends Fragment {
                 SdkUtil.showSnackbar(getActivity(), getString(R.string
                         .validation_message_invalid_expiry_date));
             }
-            if(!etExpiryDate.hasFocus()) {
+            if (!etExpiryDate.hasFocus()) {
                 etExpiryDate.setError(getString(R.string.validation_message_invalid_expiry_date));
             }
             return false;
@@ -347,7 +357,7 @@ public class AddCardDetailsFragment extends Fragment {
                 SdkUtil.showSnackbar(getActivity(), getString(R.string
                         .validation_message_invalid_expiry_date));
             }
-            if(!etExpiryDate.hasFocus()) {
+            if (!etExpiryDate.hasFocus()) {
                 etExpiryDate.setError(getString(R.string.validation_message_invalid_expiry_date));
             }
             return false;
@@ -362,7 +372,7 @@ public class AddCardDetailsFragment extends Fragment {
                     SdkUtil.showSnackbar(getActivity(), getString(R.string
                             .validation_message_invalid_expiry_date));
                 }
-                if(!etExpiryDate.hasFocus()) {
+                if (!etExpiryDate.hasFocus()) {
                     etExpiryDate.setError(getString(R.string.validation_message_invalid_expiry_date));
                 }
                 return false;
@@ -377,7 +387,7 @@ public class AddCardDetailsFragment extends Fragment {
                     SdkUtil.showSnackbar(getActivity(), getString(R.string
                             .validation_message_invalid_expiry_date));
                 }
-                if(!etExpiryDate.hasFocus()) {
+                if (!etExpiryDate.hasFocus()) {
                     etExpiryDate.setError(getString(R.string.validation_message_invalid_expiry_date));
                 }
                 return false;
@@ -398,7 +408,7 @@ public class AddCardDetailsFragment extends Fragment {
                     SdkUtil.showSnackbar(getActivity(), getString(R.string
                             .validation_message_invalid_expiry_date));
                 }
-                if(!etExpiryDate.hasFocus()) {
+                if (!etExpiryDate.hasFocus()) {
                     etExpiryDate.setError(getString(R.string.validation_message_invalid_expiry_date));
                 }
                 return false;
@@ -410,7 +420,7 @@ public class AddCardDetailsFragment extends Fragment {
                     SdkUtil.showSnackbar(getActivity(), getString(R.string
                             .validation_message_invalid_expiry_date));
                 }
-                if(!etExpiryDate.hasFocus()) {
+                if (!etExpiryDate.hasFocus()) {
                     etExpiryDate.setError(getString(R.string.validation_message_invalid_expiry_date));
                 }
                 return false;
@@ -420,7 +430,8 @@ public class AddCardDetailsFragment extends Fragment {
                 etExpiryDate.clearFocus();*/
                 if (isPayButtonClick) {
                     SdkUtil.showSnackbar(getActivity(), getString(R.string.validation_message_cvv));
-                } if(!etCvv.hasFocus()) {
+                }
+                if (!etCvv.hasFocus()) {
                     etCvv.setError(getString(R.string.validation_message_cvv));
                 }
                 questionImg.setVisibility(View.GONE);
@@ -434,7 +445,7 @@ public class AddCardDetailsFragment extends Fragment {
                         SdkUtil.showSnackbar(getActivity(), getString(R.string
                                 .validation_message_invalid_cvv));
                     }
-                    if(!etCvv.hasFocus()) {
+                    if (!etCvv.hasFocus()) {
                         etCvv.setError(getString(R.string.validation_message_invalid_cvv));
                     }
                     questionImg.setVisibility(View.GONE);
@@ -480,4 +491,32 @@ public class AddCardDetailsFragment extends Fragment {
 
         }
     }
+    private void fadeIn() {
+        formLayout.setAlpha(0);
+        ObjectAnimator fadeInAnimation = ObjectAnimator.ofFloat(formLayout, "alpha", 0, 1f);
+        fadeInAnimation.setDuration(Constants.FADE_IN_FORM_TIME);
+        fadeInAnimation.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                payNowBtn.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        fadeInAnimation.start();
+    }
+
 }
