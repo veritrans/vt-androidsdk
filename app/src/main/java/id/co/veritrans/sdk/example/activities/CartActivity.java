@@ -114,6 +114,9 @@ public class CartActivity extends AppCompatActivity {
         setPaymentValues();
         payBtn.setText( getString(R.string.pay) +" "+getString(R.string.rp) +
                 id.co.veritrans.sdk.utilities.Utils.getFormatedAmount(amount));
+        /**
+         * gcm push notification code---------------------------------------------------------------
+         */
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -133,6 +136,7 @@ public class CartActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
+        //------------------------------------------------------------------------------------------
     }
 
     @Override
